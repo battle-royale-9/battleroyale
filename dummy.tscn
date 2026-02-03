@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://dc6wmh0fbcp6q"]
+
+[ext_resource type="Texture2D" uid="uid://cc8d5vmwm1ypl" path="res://drooling.png" id="1_gtj52"]
+[ext_resource type="Script" uid="uid://cx2b122653spc" path="res://dummy.gd" id="1_xmspm"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xmspm"]
+
+[node name="Dummy" type="Area2D" unique_id=1681343172]
+script = ExtResource("1_xmspm")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1081743067]
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("1_gtj52")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1779003045]
+scale = Vector2(4, 4)
+shape = SubResource("CircleShape2D_xmspm")
+
+[node name="Label" type="Label" parent="." unique_id=1539760812]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -7.0
+offset_top = -70.0
+offset_right = 33.0
+offset_bottom = -47.0
+grow_horizontal = 2
