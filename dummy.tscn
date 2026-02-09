@@ -10,6 +10,8 @@ radius = 4.2793107
 font_size = 13
 
 [node name="Dummy" type="Area2D" unique_id=1681343172]
+collision_layer = 4
+collision_mask = 11
 script = ExtResource("1_xmspm")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1081743067]

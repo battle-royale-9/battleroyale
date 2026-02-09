@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://5htkwwxrlthc"]
+
+[ext_resource type="Script" uid="uid://damm1h5gxaeb8" path="res://spells_enemy/epstein.gd" id="1_ltrm8"]
+[ext_resource type="Texture2D" uid="uid://w2pvmubhwfqp" path="res://images/big_stein.png" id="2_cwfwr"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_e3tp1"]
+
+[node name="epstein" type="Area2D" unique_id=165100915]
+script = ExtResource("1_ltrm8")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=140927511]
+position = Vector2(-1, -1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_cwfwr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=591852960]
+position = Vector2(-2.999999, -8.999999)
+scale = Vector2(5, 5)
+shape = SubResource("CircleShape2D_e3tp1")

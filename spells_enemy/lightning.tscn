@@ -1,30 +1,30 @@
-[gd_scene format=3 uid="uid://pd1nk1bwdpjn"]
+[gd_scene format=3 uid="uid://v6kojguhvl86"]
 
-[ext_resource type="Script" uid="uid://fgey3aaxbmuu" path="res://spells/lightning.gd" id="1_888k8"]
-[ext_resource type="Texture2D" uid="uid://bxnbp2pinb83r" path="res://images/lightning3.png" id="1_cep6t"]
+[ext_resource type="Script" uid="uid://dn8v8cj0m1gmu" path="res://spells_enemy/lightning.gd" id="1_m5gmr"]
+[ext_resource type="Texture2D" uid="uid://bxnbp2pinb83r" path="res://images/lightning3.png" id="2_585eb"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_888k8"]
-atlas = ExtResource("1_cep6t")
+atlas = ExtResource("2_585eb")
 region = Rect2(13, 55, 89, 300)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mwoj2"]
-atlas = ExtResource("1_cep6t")
+atlas = ExtResource("2_585eb")
 region = Rect2(102, 55, 89, 300)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_auma5"]
-atlas = ExtResource("1_cep6t")
+atlas = ExtResource("2_585eb")
 region = Rect2(191, 55, 89, 300)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_m683h"]
-atlas = ExtResource("1_cep6t")
+atlas = ExtResource("2_585eb")
 region = Rect2(280, 55, 89, 300)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f8xya"]
-atlas = ExtResource("1_cep6t")
+atlas = ExtResource("2_585eb")
 region = Rect2(369, 55, 89, 300)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hp0ur"]
-atlas = ExtResource("1_cep6t")
+atlas = ExtResource("2_585eb")
 region = Rect2(458, 55, 89, 300)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_xuhhs"]
@@ -57,9 +57,7 @@ animations = [{
 size = Vector2(83, 269)
 
 [node name="Lightning" type="Area2D" unique_id=1919974372]
-collision_layer = 8
-collision_mask = 5
-script = ExtResource("1_888k8")
+script = ExtResource("1_m5gmr")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=897165078]
 position = Vector2(-0.29999924, -83)

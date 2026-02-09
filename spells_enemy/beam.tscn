@@ -1,21 +1,21 @@
-[gd_scene format=3 uid="uid://bg87qht3u62yx"]
+[gd_scene format=3 uid="uid://otnp24cjx777"]
 
-[ext_resource type="Texture2D" uid="uid://caejryscfk4hg" path="res://images/energy_beam.png" id="1_i4dc2"]
-[ext_resource type="Script" uid="uid://de37hug2qm8k4" path="res://spells/beam.gd" id="1_l0jbn"]
+[ext_resource type="Script" uid="uid://drxxwpqu5ulag" path="res://spells_enemy/beam.gd" id="1_7y4oi"]
+[ext_resource type="Texture2D" uid="uid://caejryscfk4hg" path="res://images/energy_beam.png" id="2_ojmjw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l0jbn"]
 size = Vector2(68, 194)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ipjrd"]
-atlas = ExtResource("1_i4dc2")
+atlas = ExtResource("2_ojmjw")
 region = Rect2(32, 55, 88, 195)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_srmnf"]
-atlas = ExtResource("1_i4dc2")
+atlas = ExtResource("2_ojmjw")
 region = Rect2(120, 55, 88, 195)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g4du1"]
-atlas = ExtResource("1_i4dc2")
+atlas = ExtResource("2_ojmjw")
 region = Rect2(208, 55, 88, 195)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_v5qso"]
@@ -36,9 +36,7 @@ animations = [{
 }]
 
 [node name="Beam" type="Area2D" unique_id=844553138]
-collision_layer = 8
-collision_mask = 5
-script = ExtResource("1_l0jbn")
+script = ExtResource("1_7y4oi")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1043133246]
 position = Vector2(100.5, 1.5)
