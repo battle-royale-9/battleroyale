@@ -5,10 +5,10 @@ var target_position = Vector2.ZERO
 var key_history = ""
 
 # --- PRELOAD EVERYTHING ---
-var epstein_scene = preload("res://epstein.tscn")
-var fireball_scene = preload("res://fireball.tscn")
-var lightning_scene = preload("res://Lightning.tscn")
-var beam_scene = preload("res://beam.tscn")
+var epstein_scene = preload("res://spells/epstein.tscn")
+var fireball_scene = preload("res://spells/fireball.tscn")
+var lightning_scene = preload("res://spells/Lightning.tscn")
+var beam_scene = preload("res://spells/beam.tscn")
 
 # NOTICE: The "dummy_scene" preload is DELETED.
 # NOTICE: The "spawn_test_dummy" function is DELETED.

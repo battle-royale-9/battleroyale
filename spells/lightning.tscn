@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://pd1nk1bwdpjn"]
 
-[ext_resource type="Script" uid="uid://fgey3aaxbmuu" path="res://lightning.gd" id="1_888k8"]
-[ext_resource type="Texture2D" uid="uid://bxnbp2pinb83r" path="res://lightning3.png" id="1_cep6t"]
+[ext_resource type="Script" uid="uid://fgey3aaxbmuu" path="res://spells/lightning.gd" id="1_888k8"]
+[ext_resource type="Texture2D" uid="uid://bxnbp2pinb83r" path="res://images/lightning3.png" id="1_cep6t"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_888k8"]
 atlas = ExtResource("1_cep6t")

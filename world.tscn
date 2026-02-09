@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://jrana7xi5tt8"]
 
-[ext_resource type="Texture2D" uid="uid://cw7ctofqq2aom" path="res://Scene Overview.png" id="1_f3sb7"]
+[ext_resource type="Texture2D" uid="uid://cw7ctofqq2aom" path="res://images/Scene Overview.png" id="1_f3sb7"]
 [ext_resource type="PackedScene" uid="uid://dbji7nwgfg8d5" path="res://player.tscn" id="2_fj7yv"]
 [ext_resource type="PackedScene" uid="uid://dc6wmh0fbcp6q" path="res://dummy.tscn" id="3_tlwt5"]
 

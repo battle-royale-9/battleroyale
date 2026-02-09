@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://foevfnuv8sgu"
-path="res://.godot/imported/lightning.png-c3a28e77c52e3fd5aca6bf42f494ed3c.ctex"
+uid="uid://cw7ctofqq2aom"
+path="res://.godot/imported/Scene Overview.png-5d5ad90130525e34590bb7948ff9cfa8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://lightning.png"
-dest_files=["res://.godot/imported/lightning.png-c3a28e77c52e3fd5aca6bf42f494ed3c.ctex"]
+source_file="res://images/Scene Overview.png"
+dest_files=["res://.godot/imported/Scene Overview.png-5d5ad90130525e34590bb7948ff9cfa8.ctex"]
 
 [params]
 

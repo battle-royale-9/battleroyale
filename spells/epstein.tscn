@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bkwhitlge0mmk"]
 
-[ext_resource type="Script" uid="uid://c0c455548s54y" path="res://epstein.gd" id="1_u8e7j"]
-[ext_resource type="Texture2D" uid="uid://w2pvmubhwfqp" path="res://big_stein.png" id="2_sjah8"]
+[ext_resource type="Script" uid="uid://c0c455548s54y" path="res://spells/epstein.gd" id="1_u8e7j"]
+[ext_resource type="Texture2D" uid="uid://w2pvmubhwfqp" path="res://images/big_stein.png" id="2_sjah8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e3tp1"]
 

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dc6wmh0fbcp6q"]
 
-[ext_resource type="Texture2D" uid="uid://cc8d5vmwm1ypl" path="res://drooling.png" id="1_gtj52"]
+[ext_resource type="Texture2D" uid="uid://cc8d5vmwm1ypl" path="res://images/drooling.png" id="1_gtj52"]
 [ext_resource type="Script" uid="uid://cx2b122653spc" path="res://dummy.gd" id="1_xmspm"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xmspm"]

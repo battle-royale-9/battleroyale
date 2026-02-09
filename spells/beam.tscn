@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bg87qht3u62yx"]
 
-[ext_resource type="Texture2D" uid="uid://caejryscfk4hg" path="res://energy_beam.png" id="1_i4dc2"]
-[ext_resource type="Script" uid="uid://de37hug2qm8k4" path="res://beam.gd" id="1_l0jbn"]
+[ext_resource type="Texture2D" uid="uid://caejryscfk4hg" path="res://images/energy_beam.png" id="1_i4dc2"]
+[ext_resource type="Script" uid="uid://de37hug2qm8k4" path="res://spells/beam.gd" id="1_l0jbn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l0jbn"]
 size = Vector2(68, 194)

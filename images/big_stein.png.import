@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxnbp2pinb83r"
-path="res://.godot/imported/lightning3.png-362efc192659ebdeeceda12518cc283f.ctex"
+uid="uid://w2pvmubhwfqp"
+path="res://.godot/imported/big_stein.png-8d863f5bfa21c683ea94f4b2c4642bed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://lightning3.png"
-dest_files=["res://.godot/imported/lightning3.png-362efc192659ebdeeceda12518cc283f.ctex"]
+source_file="res://images/big_stein.png"
+dest_files=["res://.godot/imported/big_stein.png-8d863f5bfa21c683ea94f4b2c4642bed.ctex"]
 
 [params]
 

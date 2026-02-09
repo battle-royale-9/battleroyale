@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://caejryscfk4hg"
-path="res://.godot/imported/energy_beam.png-f381e7dbf57c6b8b95489912ff2f8359.ctex"
+uid="uid://bdgthwu76tkx5"
+path="res://.godot/imported/fireball.png-470b572fd24959cf6998db5c83df0360.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://energy_beam.png"
-dest_files=["res://.godot/imported/energy_beam.png-f381e7dbf57c6b8b95489912ff2f8359.ctex"]
+source_file="res://images/fireball.png"
+dest_files=["res://.godot/imported/fireball.png-470b572fd24959cf6998db5c83df0360.ctex"]
 
 [params]
 

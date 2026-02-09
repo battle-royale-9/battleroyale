@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cc8d5vmwm1ypl"
-path="res://.godot/imported/drooling.png-bd11e230a919faaffc45424c643c2c71.ctex"
+uid="uid://foevfnuv8sgu"
+path="res://.godot/imported/lightning.png-1903c92324779b67526fbb4c79e3cbe6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://drooling.png"
-dest_files=["res://.godot/imported/drooling.png-bd11e230a919faaffc45424c643c2c71.ctex"]
+source_file="res://images/lightning.png"
+dest_files=["res://.godot/imported/lightning.png-1903c92324779b67526fbb4c79e3cbe6.ctex"]
 
 [params]
 

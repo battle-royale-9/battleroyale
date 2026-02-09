@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://w2pvmubhwfqp"
-path="res://.godot/imported/big_stein.png-5f4d00f1cff9f077d5ede2a749ba3067.ctex"
+uid="uid://caejryscfk4hg"
+path="res://.godot/imported/energy_beam.png-8e00455089a6fb26ec5456fed030d1f2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://big_stein.png"
-dest_files=["res://.godot/imported/big_stein.png-5f4d00f1cff9f077d5ede2a749ba3067.ctex"]
+source_file="res://images/energy_beam.png"
+dest_files=["res://.godot/imported/energy_beam.png-8e00455089a6fb26ec5456fed030d1f2.ctex"]
 
 [params]
 
