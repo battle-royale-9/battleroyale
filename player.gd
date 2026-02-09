@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-const SPEED = 100.0
+const SPEED = 101.0
 var target_position = Vector2.ZERO
 var key_history = ""
 
