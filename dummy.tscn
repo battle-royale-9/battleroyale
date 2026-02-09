@@ -4,12 +4,17 @@
 [ext_resource type="Script" uid="uid://cx2b122653spc" path="res://dummy.gd" id="1_xmspm"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xmspm"]
+radius = 4.2793107
+
+[sub_resource type="LabelSettings" id="LabelSettings_xmspm"]
+font_size = 13
 
 [node name="Dummy" type="Area2D" unique_id=1681343172]
 script = ExtResource("1_xmspm")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1081743067]
-scale = Vector2(0.04, 0.04)
+position = Vector2(1, 0)
+scale = Vector2(0.015670612, 0.015670612)
 texture = ExtResource("1_gtj52")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1779003045]
@@ -20,8 +25,10 @@ shape = SubResource("CircleShape2D_xmspm")
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -7.0
-offset_top = -70.0
-offset_right = 33.0
-offset_bottom = -47.0
+offset_left = -17.0
+offset_top = -33.0
+offset_right = 19.0
+offset_bottom = -10.0
 grow_horizontal = 2
+label_settings = SubResource("LabelSettings_xmspm")
+horizontal_alignment = 1

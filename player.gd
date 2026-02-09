@@ -1,36 +1,21 @@
 extends CharacterBody2D
 
-const SPEED = 400.0
+const SPEED = 100.0
 var target_position = Vector2.ZERO
 var key_history = ""
 
 # --- PRELOAD EVERYTHING ---
 var epstein_scene = preload("res://epstein.tscn")
 var fireball_scene = preload("res://fireball.tscn")
-var lightning_scene = preload("res://Lightning.tscn") # Check casing!
+var lightning_scene = preload("res://Lightning.tscn")
 var beam_scene = preload("res://beam.tscn")
 
-# PRELOAD THE DUMMY
-var dummy_scene = preload("res://Dummy.tscn")
+# NOTICE: The "dummy_scene" preload is DELETED.
+# NOTICE: The "spawn_test_dummy" function is DELETED.
 
 func _ready():
 	target_position = position
-	
-	# --- SPAWN THE TEST DUMMY AUTOMATICALLY ---
-	# We use call_deferred to wait 1 frame so the game tree is fully loaded
-	call_deferred("spawn_test_dummy")
-
-func spawn_test_dummy():
-	if dummy_scene:
-		var dummy = dummy_scene.instantiate()
-		
-		# Calculate Bottom Center of the screen
-		var screen_size = get_viewport_rect().size
-		dummy.position = Vector2(screen_size.x / 2, screen_size.y - 150)
-		
-		# Add Dummy as a SIBLING (not a child of player, or it would move with you)
-		get_parent().add_child(dummy)
-		print("Test Dummy Spawned at: ", dummy.position)
+	# NOTICE: No more spawning code here!
 
 func _input(event):
 	# 1. COMBO CHECKER

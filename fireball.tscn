@@ -4,15 +4,19 @@
 [ext_resource type="Texture2D" uid="uid://bdgthwu76tkx5" path="res://fireball.png" id="2_olwj8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_olwj8"]
+radius = 4.6341467
 
 [node name="Fireball" type="Area2D" unique_id=104508106]
+collision_layer = 0
 script = ExtResource("1_sf4mh")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1884747361]
+position = Vector2(1, 0)
 rotation = 4.712389
-scale = Vector2(0.2, 0.2)
+scale = Vector2(0.089651816, 0.089651816)
 texture = ExtResource("2_olwj8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1399722441]
+position = Vector2(1, -1)
 scale = Vector2(4.1, 4.1)
 shape = SubResource("CircleShape2D_olwj8")
