@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cl6guxc55qsbm"]
+
+[ext_resource type="Script" uid="uid://b5qohmgtxq86v" path="res://enemy.gd" id="1_4gyqm"]
+[ext_resource type="Texture2D" uid="uid://cc8d5vmwm1ypl" path="res://images/drooling.png" id="1_7k104"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4gyqm"]
+
+[node name="Cha" type="CharacterBody2D" unique_id=997118993]
+collision_layer = 4
+collision_mask = 11
+script = ExtResource("1_4gyqm")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=518281675]
+position = Vector2(2.0000153, -4.9999695)
+scale = Vector2(0.07051288, 0.070512876)
+texture = ExtResource("1_7k104")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2029746932]
+position = Vector2(2, -8)
+scale = Vector2(7.247708, 6.9511294)
+shape = SubResource("CircleShape2D_4gyqm")

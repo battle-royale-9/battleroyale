@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dbqatv2esqo4t"
+path="res://.godot/imported/Rain3.wav-af5d10797cf4aa3e66ae31b2cddfc985.sample"
+
+[deps]
+
+source_file="res://images/Ninja Adventure - Asset Pack/Ninja Adventure - Asset Pack/Audio/Sounds/Ambient/Rain3.wav"
+dest_files=["res://.godot/imported/Rain3.wav-af5d10797cf4aa3e66ae31b2cddfc985.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

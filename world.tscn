@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://cw7ctofqq2aom" path="res://images/Scene Overview.png" id="1_f3sb7"]
 [ext_resource type="PackedScene" uid="uid://cppwy1on67ohd" path="res://playerAnimated.tscn" id="3_aqk2v"]
 [ext_resource type="PackedScene" uid="uid://dc6wmh0fbcp6q" path="res://dummy.tscn" id="3_tlwt5"]
+[ext_resource type="PackedScene" uid="uid://cl6guxc55qsbm" path="res://enemy.tscn" id="4_aqk2v"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fj7yv"]
 texture = ExtResource("1_f3sb7")
@@ -5933,3 +5934,9 @@ tile_set = SubResource("TileSet_tlwt5")
 position = Vector2(44, 53)
 
 [node name="CharacterBody2D" parent="." unique_id=262399486 instance=ExtResource("3_aqk2v")]
+
+[node name="Enemy" parent="." unique_id=567183686 node_paths=PackedStringArray("target") instance=ExtResource("4_aqk2v")]
+position = Vector2(-100, 75)
+scale = Vector2(0.22023457, 0.22023457)
+collision_mask = 11
+target = NodePath("../CharacterBody2D")
