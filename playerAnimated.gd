@@ -15,7 +15,6 @@ var current_hp = 50
 @onready var overlay_fireball = $CanvasLayer/SpellBar/FireballBox/CooldownOverlay
 @onready var overlay_lightning = $CanvasLayer/SpellBar/LightningBox/CooldownOverlay
 @onready var overlay_beam = $CanvasLayer/SpellBar/BeamBox/CooldownOverlay
-# NEW: Add the Plant Box Overlay
 @onready var overlay_plant = $CanvasLayer/SpellBar/PlantBox/CooldownOverlay
 
 # --- COOLDOWN SETTINGS ---
@@ -41,7 +40,7 @@ var epstein_scene = preload("res://spells/epstein.tscn")
 var fireball_scene = preload("res://spells/fireball.tscn")
 var lightning_scene = preload("res://spells/Lightning.tscn")
 var beam_scene = preload("res://spells/beam.tscn")
-var plant_scene = preload("res://spells/plant.tscn") # NEW
+var plant_scene = preload("res://spells/plant.tscn")
 
 func _ready():
 	target_position = position
@@ -58,7 +57,8 @@ func _ready():
 	update_overlay("XC", 0)
 
 func _input(event):
-	if is_hurting(): return 
+	# REMOVED: "if is_hurting(): return" 
+	# removing this allows you to click and move even while getting hit.
 
 	# 1. COMBO CHECKER
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -67,8 +67,6 @@ func _input(event):
 		if key_history.length() > 10: key_history = key_history.right(10)
 		
 		# --- SPELL CHECKS ---
-		
-		# FIREBALL ("23")
 		if key_history.ends_with("23"):
 			if current_cooldowns["23"] <= 0:
 				cast_spell(fireball_scene)
@@ -77,7 +75,6 @@ func _input(event):
 			else:
 				print("Fireball on Cooldown!")
 
-		# LIGHTNING ("WE")
 		if key_history.ends_with("WE"):
 			if current_cooldowns["WE"] <= 0:
 				summon_spell(lightning_scene)
@@ -86,7 +83,6 @@ func _input(event):
 			else:
 				print("Lightning on Cooldown!")
 				
-		# BEAM ("SD")
 		if key_history.ends_with("SD"):
 			if current_cooldowns["SD"] <= 0:
 				cast_beam(beam_scene)
@@ -95,16 +91,14 @@ func _input(event):
 			else:
 				print("Beam on Cooldown!")
 
-		# PLANT HEAL ("XC") -- NEW
 		if key_history.ends_with("XC"):
 			if current_cooldowns["XC"] <= 0:
-				cast_behind(plant_scene) # Spawns behind you
+				cast_behind(plant_scene)
 				start_cooldown("XC")
 				key_history = ""
 			else:
 				print("Plant on Cooldown!")
 
-		# EPSTEIN
 		if key_history.ends_with("EPSTEIN"):
 			cast_spell(epstein_scene)
 			key_history = ""
@@ -124,6 +118,8 @@ func _physics_process(delta):
 		move_and_slide()
 		is_moving = true
 		
+		# Only flip the sprite if we are NOT locked in an attack animation
+		# (We allow flipping while hurting so you can run away properly)
 		if not is_attacking(): 
 			if velocity.x < 0:
 				anim.flip_h = true
@@ -134,8 +130,10 @@ func _physics_process(delta):
 		is_moving = false
 
 	# --- 2. HANDLE ANIMATION STATE ---
-	if is_hurting(): return
-	if is_attacking(): return
+	# Priority: Hurt > Attack > Run/Idle
+	
+	if is_hurting(): return   # Keeps playing HURT even if moving (Slide effect)
+	if is_attacking(): return # Keeps playing ATTACK even if moving (Moonwalk effect)
 
 	if is_moving:
 		anim.play("run")
@@ -165,7 +163,7 @@ func update_overlay(key, percentage):
 		"23": target_overlay = overlay_fireball
 		"WE": target_overlay = overlay_lightning
 		"SD": target_overlay = overlay_beam
-		"XC": target_overlay = overlay_plant # Link the new box
+		"XC": target_overlay = overlay_plant 
 	
 	if target_overlay:
 		target_overlay.value = percentage
@@ -181,14 +179,12 @@ func take_damage(amount):
 	tween.tween_property(self, "modulate", Color.WHITE, 0.1)
 	if current_hp <= 0: die()
 
-# NEW: The Plant calls this function!
 func heal(amount):
 	current_hp += amount
 	if current_hp > max_hp:
 		current_hp = max_hp
 	hp_bar.value = current_hp
 	
-	# Visual feedback (Green flash)
 	modulate = Color.GREEN
 	var tween = create_tween()
 	tween.tween_property(self, "modulate", Color.WHITE, 0.3)
@@ -211,6 +207,7 @@ func is_attacking() -> bool:
 	return false
 
 func play_attack_anim():
+	# Allow attack animation only if not already hurting
 	if not is_hurting():
 		if get_global_mouse_position().x < position.x:
 			anim.flip_h = true 
@@ -245,11 +242,9 @@ func cast_behind(spell_to_cast):
 	play_attack_anim()
 	var spell_instance = spell_to_cast.instantiate()
 	
-	# 1. POSITION: Spawn exactly under the player's feet
+	# Spawn slightly above the feet
 	spell_instance.position = position + Vector2(0, -20)
 	
-	# 2. LAYERING: Set Z-Index lower than the player
-	# If Player is 0, this makes the plant -1 (Drawing it BEHIND the player)
-	spell_instance.z_index = z_index - 1
+	# No Z-index change needed if Player Z-Index is set to 1 in Inspector
 	
 	get_parent().add_child(spell_instance)
