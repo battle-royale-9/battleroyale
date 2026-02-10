@@ -11,6 +11,26 @@ var current_hp = 50
 # --- UI NODES ---
 @onready var hp_bar = $CanvasLayer/ProgressBar
 
+# --- SPELL UI NODES (UPDATED) ---
+# We now talk to the "CooldownOverlay" (TextureProgressBar) inside the box
+# If your nodes are named differently, update these paths!
+@onready var overlay_fireball = $CanvasLayer/SpellBar/FireballBox/CooldownOverlay
+@onready var overlay_lightning = $CanvasLayer/SpellBar/LightningBox/CooldownOverlay
+@onready var overlay_beam = $CanvasLayer/SpellBar/BeamBox/CooldownOverlay
+
+# --- COOLDOWN SETTINGS ---
+const MAX_COOLDOWNS = {
+	"23": 1.0,  # Fireball
+	"WE": 3.0,  # Lightning
+	"SD": 5.0   # Beam
+}
+
+var current_cooldowns = {
+	"23": 0.0,
+	"WE": 0.0,
+	"SD": 0.0
+}
+
 # --- ANIMATION NODE ---
 @onready var anim = $AnimatedSprite2D
 
@@ -27,38 +47,63 @@ func _ready():
 	hp_bar.max_value = max_hp
 	hp_bar.value = current_hp
 	hp_bar.show_percentage = false 
+	
+	# Reset overlays to empty at start
+	update_overlay("23", 0)
+	update_overlay("WE", 0)
+	update_overlay("SD", 0)
 
 func _input(event):
+	if is_hurting(): return 
+
 	# 1. COMBO CHECKER
 	if event is InputEventKey and event.pressed and not event.echo:
 		var key_pressed = OS.get_keycode_string(event.keycode)
 		key_history += key_pressed
 		if key_history.length() > 10: key_history = key_history.right(10)
 		
-		# PROJECTILES
+		# --- SPELL CHECKS ---
+		
+		# FIREBALL ("23")
+		if key_history.ends_with("23"):
+			if current_cooldowns["23"] <= 0:
+				cast_spell(fireball_scene)
+				start_cooldown("23")         
+				key_history = ""
+			else:
+				print("Fireball on Cooldown!")
+
+		# LIGHTNING ("WE")
+		if key_history.ends_with("WE"):
+			if current_cooldowns["WE"] <= 0:
+				summon_spell(lightning_scene)
+				start_cooldown("WE")
+				key_history = ""
+			else:
+				print("Lightning on Cooldown!")
+				
+		# BEAM ("SD")
+		if key_history.ends_with("SD"):
+			if current_cooldowns["SD"] <= 0:
+				cast_beam(beam_scene)
+				start_cooldown("SD")
+				key_history = ""
+			else:
+				print("Beam on Cooldown!")
+
+		# EPSTEIN (No cooldown)
 		if key_history.ends_with("EPSTEIN"):
 			cast_spell(epstein_scene)
 			key_history = ""
-			
-		if key_history.ends_with("23"):
-			cast_spell(fireball_scene)
-			key_history = "" 
-			
-		# SUMMONS
-		if key_history.ends_with("WE"):
-			summon_spell(lightning_scene)
-			key_history = "" 
-			
-		# BEAMS
-		if key_history.ends_with("SD"):
-			cast_beam(beam_scene)
-			key_history = "" 
 
 	# 2. MOVEMENT CLICK
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		target_position = get_global_mouse_position()
 
-func _physics_process(_delta):
+func _physics_process(delta):
+	# --- HANDLE COOLDOWNS ---
+	process_cooldowns(delta)
+
 	# --- 1. HANDLE MOVEMENT ---
 	var is_moving = false
 	
@@ -67,9 +112,6 @@ func _physics_process(_delta):
 		move_and_slide()
 		is_moving = true
 		
-		# --- SPRITE FLIPPING LOGIC (UPDATED) ---
-		# Only flip based on movement if we are NOT attacking.
-		# If we ARE attacking, we want to keep looking at the mouse (handled in cast function).
 		if not is_attacking(): 
 			if velocity.x < 0:
 				anim.flip_h = true
@@ -80,32 +122,60 @@ func _physics_process(_delta):
 		is_moving = false
 
 	# --- 2. HANDLE ANIMATION STATE ---
-	
-	if is_hurting():
-		return
-
-	if is_attacking():
-		return
+	if is_hurting(): return
+	if is_attacking(): return
 
 	if is_moving:
 		anim.play("run")
 	else:
 		anim.play("idle")
 
+# --- COOLDOWN LOGIC (UPDATED) ---
+
+func start_cooldown(combo_key):
+	# 1. Set the timer
+	current_cooldowns[combo_key] = MAX_COOLDOWNS[combo_key]
+	# 2. Visually fill the bar to 100% (Dark)
+	update_overlay(combo_key, 100)
+
+func process_cooldowns(delta):
+	for key in current_cooldowns:
+		if current_cooldowns[key] > 0:
+			current_cooldowns[key] -= delta 
+			
+			# CALCULATE PERCENTAGE
+			var ratio = current_cooldowns[key] / MAX_COOLDOWNS[key]
+			update_overlay(key, ratio * 100)
+			var percentage = ratio * 100
+			
+			# --- ADD THIS DEBUG LINE ---
+			#print(key, " Cooldown: ", percentage)
+			
+		else:
+			current_cooldowns[key] = 0
+			update_overlay(key, 0) # Clear the shadow
+
+func update_overlay(key, percentage):
+	var target_overlay = null
+	
+	match key:
+		"23": target_overlay = overlay_fireball
+		"WE": target_overlay = overlay_lightning
+		"SD": target_overlay = overlay_beam
+	
+	if target_overlay:
+		target_overlay.value = percentage
+
 # --- HEALTH FUNCTIONS ---
 
 func take_damage(amount):
 	current_hp -= amount
 	hp_bar.value = current_hp
-	
 	anim.play("hurt")
-	
 	modulate = Color.RED
 	var tween = create_tween()
 	tween.tween_property(self, "modulate", Color.WHITE, 0.1)
-	
-	if current_hp <= 0:
-		die()
+	if current_hp <= 0: die()
 
 func die():
 	print("Player Died!")
@@ -125,13 +195,10 @@ func is_attacking() -> bool:
 
 func play_attack_anim():
 	if not is_hurting():
-		# --- FACE THE MOUSE (NEW) ---
-		# Determine where the mouse is relative to the player
 		if get_global_mouse_position().x < position.x:
-			anim.flip_h = true  # Mouse is to the left -> Look Left
+			anim.flip_h = true 
 		else:
-			anim.flip_h = false # Mouse is to the right -> Look Right
-
+			anim.flip_h = false 
 		var attacks = ["attack1", "attack2"]
 		anim.play(attacks.pick_random())
 
