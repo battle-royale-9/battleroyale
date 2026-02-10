@@ -274,7 +274,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mm7dp"]
-size = Vector2(28, 28)
+size = Vector2(8, 21)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_deskq"]
 bg_color = Color(0, 0, 0, 1)
@@ -288,17 +288,16 @@ collision_mask = 21
 script = ExtResource("1_x7qct")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=935771047]
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.3, 0.3)
 sprite_frames = SubResource("SpriteFrames_bhlf4")
-animation = &"hurt"
-frame = 3
-frame_progress = 1.0
+animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1812995610]
+position = Vector2(-2, -0.5)
 shape = SubResource("RectangleShape2D_mm7dp")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=576124904]
-zoom = Vector2(2, 2)
+zoom = Vector2(3, 3)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1971207022]
 

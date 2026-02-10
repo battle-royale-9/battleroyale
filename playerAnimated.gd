@@ -24,14 +24,11 @@ func _ready():
 	target_position = position
 	anim.play("idle")
 	
-	# --- SETUP HEALTH BAR ---
 	hp_bar.max_value = max_hp
 	hp_bar.value = current_hp
 	hp_bar.show_percentage = false 
 
 func _input(event):
-	# REMOVED: The block that stopped input. You can now type combos anytime.
-
 	# 1. COMBO CHECKER
 	if event is InputEventKey and event.pressed and not event.echo:
 		var key_pressed = OS.get_keycode_string(event.keycode)
@@ -62,9 +59,7 @@ func _input(event):
 		target_position = get_global_mouse_position()
 
 func _physics_process(_delta):
-	# REMOVED: The block that stopped movement. 
-	
-	# --- 1. HANDLE MOVEMENT (Always active) ---
+	# --- 1. HANDLE MOVEMENT ---
 	var is_moving = false
 	
 	if position.distance_to(target_position) > 5:
@@ -72,27 +67,26 @@ func _physics_process(_delta):
 		move_and_slide()
 		is_moving = true
 		
-		# Flip sprite based on movement direction
-		if velocity.x < 0:
-			anim.flip_h = true
-		elif velocity.x > 0:
-			anim.flip_h = false
+		# --- SPRITE FLIPPING LOGIC (UPDATED) ---
+		# Only flip based on movement if we are NOT attacking.
+		# If we ARE attacking, we want to keep looking at the mouse (handled in cast function).
+		if not is_attacking(): 
+			if velocity.x < 0:
+				anim.flip_h = true
+			elif velocity.x > 0:
+				anim.flip_h = false
 	else:
 		velocity = Vector2.ZERO
 		is_moving = false
 
 	# --- 2. HANDLE ANIMATION STATE ---
 	
-	# RULE: If "hurt" is playing, DO NOT change animation. 
-	# The player will "slide" while moving, which is what we want.
 	if is_hurting():
 		return
 
-	# PRIORITY CHECK: Is an attack currently playing?
 	if is_attacking():
 		return
 
-	# If we are NOT attacking AND NOT hurting, then we handle Run vs Idle
 	if is_moving:
 		anim.play("run")
 	else:
@@ -102,20 +96,13 @@ func _physics_process(_delta):
 
 func take_damage(amount):
 	current_hp -= amount
-	
-	# Update the UI Bar
 	hp_bar.value = current_hp
 	
-	# --- PLAY HURT ANIMATION ---
-	# This forces the animation to start immediately.
 	anim.play("hurt")
 	
-	# Flash Red for feedback
 	modulate = Color.RED
 	var tween = create_tween()
 	tween.tween_property(self, "modulate", Color.WHITE, 0.1)
-	
-	print("Player took damage! HP: ", current_hp)
 	
 	if current_hp <= 0:
 		die()
@@ -127,7 +114,6 @@ func die():
 # --- HELPER FUNCTIONS ---
 
 func is_hurting() -> bool:
-	# Checks if the hurt animation is currently active
 	if anim.animation == "hurt" and anim.is_playing():
 		return true
 	return false
@@ -138,9 +124,14 @@ func is_attacking() -> bool:
 	return false
 
 func play_attack_anim():
-	# ONLY play attack animation if we are NOT hurting.
-	# If we are hurting, the spell still fires (logic), but the sprite stays "hurt" (visual).
 	if not is_hurting():
+		# --- FACE THE MOUSE (NEW) ---
+		# Determine where the mouse is relative to the player
+		if get_global_mouse_position().x < position.x:
+			anim.flip_h = true  # Mouse is to the left -> Look Left
+		else:
+			anim.flip_h = false # Mouse is to the right -> Look Right
+
 		var attacks = ["attack1", "attack2"]
 		anim.play(attacks.pick_random())
 
