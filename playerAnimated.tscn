@@ -427,3 +427,31 @@ fill_mode = 3
 nine_patch_stretch = true
 texture_progress = SubResource("PlaceholderTexture2D_dnqdc")
 tint_progress = Color(0, 0, 0, 0.5882353)
+
+[node name="PlantBox" type="Panel" parent="CanvasLayer/SpellBar" unique_id=2001321742]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/SpellBar/PlantBox" unique_id=563294415]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Plant"
+label_settings = SubResource("LabelSettings_omh87")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/PlantBox" unique_id=276377288]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+fill_mode = 3
+nine_patch_stretch = true
+texture_progress = SubResource("PlaceholderTexture2D_dnqdc")
+tint_progress = Color(0, 0, 0, 0.5882353)

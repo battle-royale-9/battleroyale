@@ -11,24 +11,26 @@ var current_hp = 50
 # --- UI NODES ---
 @onready var hp_bar = $CanvasLayer/ProgressBar
 
-# --- SPELL UI NODES (UPDATED) ---
-# We now talk to the "CooldownOverlay" (TextureProgressBar) inside the box
-# If your nodes are named differently, update these paths!
+# --- SPELL UI NODES ---
 @onready var overlay_fireball = $CanvasLayer/SpellBar/FireballBox/CooldownOverlay
 @onready var overlay_lightning = $CanvasLayer/SpellBar/LightningBox/CooldownOverlay
 @onready var overlay_beam = $CanvasLayer/SpellBar/BeamBox/CooldownOverlay
+# NEW: Add the Plant Box Overlay
+@onready var overlay_plant = $CanvasLayer/SpellBar/PlantBox/CooldownOverlay
 
 # --- COOLDOWN SETTINGS ---
 const MAX_COOLDOWNS = {
 	"23": 1.0,  # Fireball
 	"WE": 3.0,  # Lightning
-	"SD": 5.0   # Beam
+	"SD": 5.0,  # Beam
+	"XC": 10.0  # Plant (Heal)
 }
 
 var current_cooldowns = {
 	"23": 0.0,
 	"WE": 0.0,
-	"SD": 0.0
+	"SD": 0.0,
+	"XC": 0.0
 }
 
 # --- ANIMATION NODE ---
@@ -39,6 +41,7 @@ var epstein_scene = preload("res://spells/epstein.tscn")
 var fireball_scene = preload("res://spells/fireball.tscn")
 var lightning_scene = preload("res://spells/Lightning.tscn")
 var beam_scene = preload("res://spells/beam.tscn")
+var plant_scene = preload("res://spells/plant.tscn") # NEW
 
 func _ready():
 	target_position = position
@@ -48,10 +51,11 @@ func _ready():
 	hp_bar.value = current_hp
 	hp_bar.show_percentage = false 
 	
-	# Reset overlays to empty at start
+	# Reset overlays
 	update_overlay("23", 0)
 	update_overlay("WE", 0)
 	update_overlay("SD", 0)
+	update_overlay("XC", 0)
 
 func _input(event):
 	if is_hurting(): return 
@@ -91,7 +95,16 @@ func _input(event):
 			else:
 				print("Beam on Cooldown!")
 
-		# EPSTEIN (No cooldown)
+		# PLANT HEAL ("XC") -- NEW
+		if key_history.ends_with("XC"):
+			if current_cooldowns["XC"] <= 0:
+				cast_behind(plant_scene) # Spawns behind you
+				start_cooldown("XC")
+				key_history = ""
+			else:
+				print("Plant on Cooldown!")
+
+		# EPSTEIN
 		if key_history.ends_with("EPSTEIN"):
 			cast_spell(epstein_scene)
 			key_history = ""
@@ -101,7 +114,6 @@ func _input(event):
 		target_position = get_global_mouse_position()
 
 func _physics_process(delta):
-	# --- HANDLE COOLDOWNS ---
 	process_cooldowns(delta)
 
 	# --- 1. HANDLE MOVEMENT ---
@@ -130,30 +142,21 @@ func _physics_process(delta):
 	else:
 		anim.play("idle")
 
-# --- COOLDOWN LOGIC (UPDATED) ---
+# --- COOLDOWN LOGIC ---
 
 func start_cooldown(combo_key):
-	# 1. Set the timer
 	current_cooldowns[combo_key] = MAX_COOLDOWNS[combo_key]
-	# 2. Visually fill the bar to 100% (Dark)
 	update_overlay(combo_key, 100)
 
 func process_cooldowns(delta):
 	for key in current_cooldowns:
 		if current_cooldowns[key] > 0:
 			current_cooldowns[key] -= delta 
-			
-			# CALCULATE PERCENTAGE
 			var ratio = current_cooldowns[key] / MAX_COOLDOWNS[key]
 			update_overlay(key, ratio * 100)
-			var percentage = ratio * 100
-			
-			# --- ADD THIS DEBUG LINE ---
-			#print(key, " Cooldown: ", percentage)
-			
 		else:
 			current_cooldowns[key] = 0
-			update_overlay(key, 0) # Clear the shadow
+			update_overlay(key, 0)
 
 func update_overlay(key, percentage):
 	var target_overlay = null
@@ -162,6 +165,7 @@ func update_overlay(key, percentage):
 		"23": target_overlay = overlay_fireball
 		"WE": target_overlay = overlay_lightning
 		"SD": target_overlay = overlay_beam
+		"XC": target_overlay = overlay_plant # Link the new box
 	
 	if target_overlay:
 		target_overlay.value = percentage
@@ -176,6 +180,19 @@ func take_damage(amount):
 	var tween = create_tween()
 	tween.tween_property(self, "modulate", Color.WHITE, 0.1)
 	if current_hp <= 0: die()
+
+# NEW: The Plant calls this function!
+func heal(amount):
+	current_hp += amount
+	if current_hp > max_hp:
+		current_hp = max_hp
+	hp_bar.value = current_hp
+	
+	# Visual feedback (Green flash)
+	modulate = Color.GREEN
+	var tween = create_tween()
+	tween.tween_property(self, "modulate", Color.WHITE, 0.3)
+	print("Healed! Current HP: ", current_hp)
 
 func die():
 	print("Player Died!")
@@ -222,4 +239,17 @@ func cast_beam(spell_to_cast):
 	var spell_instance = spell_to_cast.instantiate()
 	spell_instance.position = position
 	spell_instance.look_at(get_global_mouse_position())
+	get_parent().add_child(spell_instance)
+
+func cast_behind(spell_to_cast):
+	play_attack_anim()
+	var spell_instance = spell_to_cast.instantiate()
+	
+	# 1. POSITION: Spawn exactly under the player's feet
+	spell_instance.position = position + Vector2(0, -20)
+	
+	# 2. LAYERING: Set Z-Index lower than the player
+	# If Player is 0, this makes the plant -1 (Drawing it BEHIND the player)
+	spell_instance.z_index = z_index - 1
+	
 	get_parent().add_child(spell_instance)
