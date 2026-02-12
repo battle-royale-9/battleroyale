@@ -8,6 +8,15 @@ var key_history = ""
 var max_hp = 50      
 var current_hp = 50  
 
+# --- SPELL UNLOCKS (NEW) ---
+# All spells start as FALSE (Locked)
+var spells_unlocked = {
+	"23": false, 
+	"WE": false,
+	"SD": false,
+	"XC": false
+}
+
 # --- UI NODES ---
 @onready var hp_bar = $CanvasLayer/ProgressBar
 
@@ -57,9 +66,6 @@ func _ready():
 	update_overlay("XC", 0)
 
 func _input(event):
-	# REMOVED: "if is_hurting(): return" 
-	# removing this allows you to click and move even while getting hit.
-
 	# 1. COMBO CHECKER
 	if event is InputEventKey and event.pressed and not event.echo:
 		var key_pressed = OS.get_keycode_string(event.keycode)
@@ -67,38 +73,56 @@ func _input(event):
 		if key_history.length() > 10: key_history = key_history.right(10)
 		
 		# --- SPELL CHECKS ---
+		
+		# FIREBALL ("23")
 		if key_history.ends_with("23"):
-			if current_cooldowns["23"] <= 0:
-				cast_spell(fireball_scene)
-				start_cooldown("23")         
-				key_history = ""
+			if spells_unlocked["23"] == true:
+				if current_cooldowns["23"] <= 0:
+					cast_spell(fireball_scene)
+					start_cooldown("23")         
+					key_history = ""
+				else:
+					print("Fireball on Cooldown!")
 			else:
-				print("Fireball on Cooldown!")
+				print("You need to find the Fireball Book first!")
 
+		# LIGHTNING ("WE")
 		if key_history.ends_with("WE"):
-			if current_cooldowns["WE"] <= 0:
-				summon_spell(lightning_scene)
-				start_cooldown("WE")
-				key_history = ""
+			if spells_unlocked["WE"] == true:
+				if current_cooldowns["WE"] <= 0:
+					summon_spell(lightning_scene)
+					start_cooldown("WE")
+					key_history = ""
+				else:
+					print("Lightning on Cooldown!")
 			else:
-				print("Lightning on Cooldown!")
+				print("You need to find the Lightning Book first!")
 				
+		# BEAM ("SD")
 		if key_history.ends_with("SD"):
-			if current_cooldowns["SD"] <= 0:
-				cast_beam(beam_scene)
-				start_cooldown("SD")
-				key_history = ""
+			if spells_unlocked["SD"] == true:
+				if current_cooldowns["SD"] <= 0:
+					cast_beam(beam_scene)
+					start_cooldown("SD")
+					key_history = ""
+				else:
+					print("Beam on Cooldown!")
 			else:
-				print("Beam on Cooldown!")
+				print("You need to find the Beam Book first!")
 
+		# PLANT ("XC")
 		if key_history.ends_with("XC"):
-			if current_cooldowns["XC"] <= 0:
-				cast_behind(plant_scene)
-				start_cooldown("XC")
-				key_history = ""
+			if spells_unlocked["XC"] == true:
+				if current_cooldowns["XC"] <= 0:
+					cast_behind(plant_scene)
+					start_cooldown("XC")
+					key_history = ""
+				else:
+					print("Plant on Cooldown!")
 			else:
-				print("Plant on Cooldown!")
+				print("You need to find the Plant Book first!")
 
+		# EPSTEIN (Cheat code? Leaving unlocked)
 		if key_history.ends_with("EPSTEIN"):
 			cast_spell(epstein_scene)
 			key_history = ""
@@ -118,8 +142,6 @@ func _physics_process(delta):
 		move_and_slide()
 		is_moving = true
 		
-		# Only flip the sprite if we are NOT locked in an attack animation
-		# (We allow flipping while hurting so you can run away properly)
 		if not is_attacking(): 
 			if velocity.x < 0:
 				anim.flip_h = true
@@ -130,10 +152,8 @@ func _physics_process(delta):
 		is_moving = false
 
 	# --- 2. HANDLE ANIMATION STATE ---
-	# Priority: Hurt > Attack > Run/Idle
-	
-	if is_hurting(): return   # Keeps playing HURT even if moving (Slide effect)
-	if is_attacking(): return # Keeps playing ATTACK even if moving (Moonwalk effect)
+	if is_hurting(): return   
+	if is_attacking(): return 
 
 	if is_moving:
 		anim.play("run")
@@ -167,6 +187,14 @@ func update_overlay(key, percentage):
 	
 	if target_overlay:
 		target_overlay.value = percentage
+
+# --- UNLOCK LOGIC (NEW) ---
+
+# This function is called by the Book when you pick it up!
+func unlock_spell(code_name):
+	if code_name in spells_unlocked:
+		spells_unlocked[code_name] = true
+		print("SPELL UNLOCKED: ", code_name)
 
 # --- HEALTH FUNCTIONS ---
 
@@ -207,7 +235,6 @@ func is_attacking() -> bool:
 	return false
 
 func play_attack_anim():
-	# Allow attack animation only if not already hurting
 	if not is_hurting():
 		if get_global_mouse_position().x < position.x:
 			anim.flip_h = true 
@@ -244,7 +271,5 @@ func cast_behind(spell_to_cast):
 	
 	# Spawn slightly above the feet
 	spell_instance.position = position + Vector2(0, -20)
-	
-	# No Z-index change needed if Player Z-Index is set to 1 in Inspector
 	
 	get_parent().add_child(spell_instance)

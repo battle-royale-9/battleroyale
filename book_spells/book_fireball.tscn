@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://dxawtw6wk84pw"]
+
+[ext_resource type="Script" uid="uid://dwj0qngk6lw7q" path="res://book_spells/book_fireball.gd" id="1_3e1bc"]
+[ext_resource type="Texture2D" uid="uid://xul1xw3owqb2" path="res://images/books/book_fire.png" id="1_hun83"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3e1bc"]
+radius = 10.049875
+
+[node name="BookFireball" type="Area2D" unique_id=1198535969]
+collision_mask = 3
+script = ExtResource("1_3e1bc")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=51863812]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("1_hun83")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=461633254]
+shape = SubResource("CircleShape2D_3e1bc")
