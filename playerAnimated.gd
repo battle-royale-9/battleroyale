@@ -8,7 +8,7 @@ var key_history = ""
 var max_hp = 50      
 var current_hp = 50  
 
-# --- SPELL UNLOCKS (NEW) ---
+# --- SPELL UNLOCKS ---
 # All spells start as FALSE (Locked)
 var spells_unlocked = {
 	"23": false, 
@@ -20,11 +20,21 @@ var spells_unlocked = {
 # --- UI NODES ---
 @onready var hp_bar = $CanvasLayer/ProgressBar
 
-# --- SPELL UI NODES ---
+# --- STATUS LABEL (New) ---
+@onready var status_label = $spell_status
+var status_start_pos = Vector2.ZERO # To remember where you put it in the editor
+
+# --- SPELL UI NODES (COOLDOWNS) ---
 @onready var overlay_fireball = $CanvasLayer/SpellBar/FireballBox/CooldownOverlay
 @onready var overlay_lightning = $CanvasLayer/SpellBar/LightningBox/CooldownOverlay
 @onready var overlay_beam = $CanvasLayer/SpellBar/BeamBox/CooldownOverlay
 @onready var overlay_plant = $CanvasLayer/SpellBar/PlantBox/CooldownOverlay
+
+# --- SPELL UI NODES (LOCKS - NEW) ---
+@onready var lock_fireball = $CanvasLayer/SpellBar/FireballBox/LockIcon
+@onready var lock_lightning = $CanvasLayer/SpellBar/LightningBox/LockIcon
+@onready var lock_beam = $CanvasLayer/SpellBar/BeamBox/LockIcon
+@onready var lock_plant = $CanvasLayer/SpellBar/PlantBox/LockIcon
 
 # --- COOLDOWN SETTINGS ---
 const MAX_COOLDOWNS = {
@@ -59,11 +69,21 @@ func _ready():
 	hp_bar.value = current_hp
 	hp_bar.show_percentage = false 
 	
+	# Setup Status Label
+	status_start_pos = status_label.position # Remember where you placed it
+	status_label.visible = false # Hide it at start
+	
 	# Reset overlays
 	update_overlay("23", 0)
 	update_overlay("WE", 0)
 	update_overlay("SD", 0)
 	update_overlay("XC", 0)
+	
+	# Ensure Locks are VISIBLE at start (because spells are locked)
+	lock_fireball.visible = true
+	lock_lightning.visible = true
+	lock_beam.visible = true
+	lock_plant.visible = true
 
 func _input(event):
 	# 1. COMBO CHECKER
@@ -82,9 +102,9 @@ func _input(event):
 					start_cooldown("23")         
 					key_history = ""
 				else:
-					print("Fireball on Cooldown!")
+					show_status_text("Cooldown!")
 			else:
-				print("You need to find the Fireball Book first!")
+				show_status_text("Locked!")
 
 		# LIGHTNING ("WE")
 		if key_history.ends_with("WE"):
@@ -94,9 +114,9 @@ func _input(event):
 					start_cooldown("WE")
 					key_history = ""
 				else:
-					print("Lightning on Cooldown!")
+					show_status_text("Cooldown!")
 			else:
-				print("You need to find the Lightning Book first!")
+				show_status_text("Locked!")
 				
 		# BEAM ("SD")
 		if key_history.ends_with("SD"):
@@ -106,9 +126,9 @@ func _input(event):
 					start_cooldown("SD")
 					key_history = ""
 				else:
-					print("Beam on Cooldown!")
+					show_status_text("Cooldown!")
 			else:
-				print("You need to find the Beam Book first!")
+				show_status_text("Locked!")
 
 		# PLANT ("XC")
 		if key_history.ends_with("XC"):
@@ -118,11 +138,11 @@ func _input(event):
 					start_cooldown("XC")
 					key_history = ""
 				else:
-					print("Plant on Cooldown!")
+					show_status_text("Cooldown!")
 			else:
-				print("You need to find the Plant Book first!")
+				show_status_text("Locked!")
 
-		# EPSTEIN (Cheat code? Leaving unlocked)
+		# EPSTEIN
 		if key_history.ends_with("EPSTEIN"):
 			cast_spell(epstein_scene)
 			key_history = ""
@@ -160,6 +180,24 @@ func _physics_process(delta):
 	else:
 		anim.play("idle")
 
+# --- VISUAL FEEDBACK (NEW) ---
+
+func show_status_text(text_content):
+	# 1. Reset the label
+	status_label.text = text_content
+	status_label.position = status_start_pos
+	status_label.modulate.a = 1.0 # Fully visible
+	status_label.visible = true
+	
+	# 2. Animate it
+	var tween = create_tween()
+	# Move UP by 30 pixels
+	tween.tween_property(status_label, "position:y", -30.0, 0.8).as_relative()
+	# Fade OUT at the same time
+	tween.parallel().tween_property(status_label, "modulate:a", 0.0, 0.8)
+	# Hide when done
+	tween.tween_callback(status_label.hide)
+
 # --- COOLDOWN LOGIC ---
 
 func start_cooldown(combo_key):
@@ -188,13 +226,22 @@ func update_overlay(key, percentage):
 	if target_overlay:
 		target_overlay.value = percentage
 
-# --- UNLOCK LOGIC (NEW) ---
+# --- UNLOCK LOGIC (UPDATED) ---
 
-# This function is called by the Book when you pick it up!
 func unlock_spell(code_name):
 	if code_name in spells_unlocked:
 		spells_unlocked[code_name] = true
 		print("SPELL UNLOCKED: ", code_name)
+		
+		# Show visual feedback
+		show_status_text("Unlocked!")
+		
+		# Remove the lock icon
+		match code_name:
+			"23": lock_fireball.visible = false
+			"WE": lock_lightning.visible = false
+			"SD": lock_beam.visible = false
+			"XC": lock_plant.visible = false
 
 # --- HEALTH FUNCTIONS ---
 
@@ -268,8 +315,5 @@ func cast_beam(spell_to_cast):
 func cast_behind(spell_to_cast):
 	play_attack_anim()
 	var spell_instance = spell_to_cast.instantiate()
-	
-	# Spawn slightly above the feet
 	spell_instance.position = position + Vector2(0, -20)
-	
 	get_parent().add_child(spell_instance)
