@@ -9,6 +9,7 @@ const RESET_TIME = 3.0
 var attack_timer = 0.0
 const ATTACK_INTERVAL = 2.0 # Fire every 2 seconds
 var fireball_scene = preload("res://spells/fireball.tscn")
+var beam_scene = preload("uid://bg87qht3u62yx")
 
 # --- UI NODES ---
 @onready var damage_label = $Label 
@@ -39,7 +40,7 @@ func _process(delta):
 		cast_bar.value = attack_timer
 	
 	if attack_timer >= ATTACK_INTERVAL:
-		shoot_fireball()
+		shoot_beam()
 		attack_timer = 0.0 # Reset timer
 		if cast_bar:
 			cast_bar.value = 0
@@ -52,6 +53,15 @@ func shoot_fireball():
 	
 	# Set direction to DOWN
 	spell.direction = Vector2.DOWN
+	
+	# Add to the world
+	get_parent().add_child(spell)
+	
+func shoot_beam():
+	var spell = beam_scene.instantiate()
+	spell.position = position + Vector2(50, 0)
+	
+	spell.rotation = 0
 	
 	# Add to the world
 	get_parent().add_child(spell)

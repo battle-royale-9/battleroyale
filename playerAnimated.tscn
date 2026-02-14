@@ -558,3 +558,7 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_omh87")
 max_value = 0.5
 step = 0.0
 show_percentage = false
+
+[node name="SilencedTimer" type="Timer" parent="." unique_id=1984589838]
+
+[connection signal="timeout" from="SilencedTimer" to="." method="_on_silenced_timer_timeout"]

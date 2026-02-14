@@ -6,6 +6,7 @@ const CAST_TIME = 0.5 # Duration of the wind-up/telegraph
 var target_position = Vector2.ZERO
 var key_history = ""
 var is_casting = false # Tracks if we are currently winding up
+var is_silenced = false
 
 # --- HEALTH SETTINGS ---
 var max_hp = 50      
@@ -59,6 +60,9 @@ var current_cooldowns = {
 
 # --- ANIMATION NODE ---
 @onready var anim = $AnimatedSprite2D
+
+# --- TIMER NODE ---
+@onready var silenced_timer: Timer = $SilencedTimer
 
 # --- PRELOAD EVERYTHING ---
 var epstein_scene = preload("res://spells/epstein.tscn")
@@ -314,3 +318,21 @@ func cast_behind(spell_to_cast):
 	get_parent().add_child(spell)
 	spell.global_position = global_position 
 	if spell.has_method("setup"): spell.setup(self)
+
+# --- SILENCE ---
+
+func apply_silenced(silenced_duration):
+	is_silenced = true
+	silenced_timer.wait_time = silenced_duration
+	silenced_timer.start()
+	lock_fireball.visible = true
+	lock_lightning.visible = true
+	lock_beam.visible = true
+	lock_plant.visible = true
+
+func _on_silenced_timer_timeout() -> void:
+	is_silenced = false
+	lock_fireball.visible = not spells_unlocked["23"]
+	lock_lightning.visible = not spells_unlocked["WE"]
+	lock_beam.visible = not spells_unlocked["SD"]
+	lock_plant.visible = not spells_unlocked["XC"]
