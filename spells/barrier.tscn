@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://myvsswghxgp"]
+
+[ext_resource type="Texture2D" uid="uid://cnpdn8gblichy" path="res://images/spells/barrier.png" id="1_0oshp"]
+[ext_resource type="Script" uid="uid://bkgts5cgibv85" path="res://spells/barrier.gd" id="1_ooy4l"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0oshp"]
+radius = 15.132746
+
+[node name="Barrier" type="Area2D" unique_id=1522064716]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("1_ooy4l")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1429047300]
+visible = false
+position = Vector2(-1.312498, 0.6875019)
+scale = Vector2(0.32324222, 0.32324222)
+texture = ExtResource("1_0oshp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=46818120]
+visible = false
+position = Vector2(-1.3124981, 0.6875019)
+shape = SubResource("CircleShape2D_0oshp")
+disabled = true
+
+[node name="ParryTimer" type="Timer" parent="." unique_id=1691315367]
+wait_time = 0.15
+one_shot = true

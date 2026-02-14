@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 const SPEED = 101.0
-const CAST_TIME = 0.3 # Duration of the wind-up/telegraph
+const CAST_TIME = 0.5 # Duration of the wind-up/telegraph
 
 var target_position = Vector2.ZERO
 var key_history = ""
@@ -21,8 +21,10 @@ var spells_unlocked = {
 
 # --- UI NODES ---
 @onready var hp_bar = $CanvasLayer/ProgressBar
+@onready var hp_label = $CanvasLayer/ProgressBar/HPLabel # Added reference to your new Label
 @onready var status_label = $spell_status
-@onready var cast_bar = $CastBar # Set this to Fill: Yellow in Inspector
+@onready var cast_bar = $CastBar 
+@onready var barrier = $Barrier # Ensure your Barrier scene is instanced here!
 var status_start_pos = Vector2.ZERO 
 
 # --- SPELL UI NODES (COOLDOWNS) ---
@@ -70,8 +72,7 @@ func _ready():
 	anim.play("idle")
 	
 	hp_bar.max_value = max_hp
-	hp_bar.value = current_hp
-	hp_bar.show_percentage = false 
+	update_hp_ui() # Initialize the health numbers and bar
 	
 	# Setup Cast Bar
 	cast_bar.visible = false
@@ -85,13 +86,21 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
 func _input(event):
-	# Allow movement clicks even while casting
+	# 1. MOVEMENT CLICK
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		target_position = get_global_mouse_position()
+
+	# 2. BARRIER TOGGLE (Right Click)
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
+		if event.pressed:
+			barrier.activate()
+		else:
+			barrier.deactivate()
 
 	# Don't start a NEW spell combo if already winding one up
 	if is_casting: return
 
+	# 3. COMBO CHECKER
 	if event is InputEventKey and event.pressed and not event.echo:
 		var key_pressed = OS.get_keycode_string(event.keycode)
 		key_history += key_pressed
@@ -119,7 +128,6 @@ func start_windup(id, scene, type):
 		cast_bar.visible = true
 		
 		var tween = create_tween()
-		# Fills left-to-right over CAST_TIME
 		tween.tween_property(cast_bar, "value", CAST_TIME, CAST_TIME)
 		tween.finished.connect(func(): _release_spell(id, scene, type))
 	elif not spells_unlocked[id]:
@@ -146,7 +154,6 @@ func _physics_process(delta):
 
 	var is_moving = false
 	
-	# MOVEMENT FIX: Removed "if not is_casting" so you can move while winding up
 	if position.distance_to(target_position) > 5:
 		velocity = position.direction_to(target_position) * SPEED
 		move_and_slide()
@@ -179,6 +186,12 @@ func _reset_ui():
 	lock_lightning.visible = true
 	lock_beam.visible = true
 	lock_plant.visible = true
+
+func update_hp_ui():
+	hp_bar.value = current_hp
+	# round() ensures 42.8 becomes 43, then int() removes the .0
+	var display_hp = int(round(current_hp))
+	hp_label.text = str(display_hp) + " / " + str(max_hp)
 
 func show_status_text(text_content):
 	status_label.text = text_content
@@ -223,16 +236,28 @@ func unlock_spell(code_name):
 			"SD": lock_beam.visible = false
 			"XC": lock_plant.visible = false
 
-# --- HEALTH ---
+# --- HEALTH & BARRIER LOGIC ---
 
 func take_damage(amount):
+	# Check the barrier's current state
+	var shield_status = barrier.get_shield_status()
+	
+	if shield_status == "PARRY":
+		show_status_text("Parried!")
+		return # Negate all damage
+		
+	if shield_status == "BLOCK":
+		amount *= 0.8 # 20% reduction (take 80% damage)
+	
+	# Normal damage logic continues
 	if is_casting:
 		is_casting = false
 		cast_bar.visible = false
 		show_status_text("Interrupted!")
 
 	current_hp -= amount
-	hp_bar.value = current_hp
+	update_hp_ui() # This handles the bar and the text label
+	
 	anim.play("hurt")
 	modulate = Color.RED
 	create_tween().tween_property(self, "modulate", Color.WHITE, 0.1)
@@ -240,7 +265,8 @@ func take_damage(amount):
 
 func heal(amount):
 	current_hp = min(current_hp + amount, max_hp)
-	hp_bar.value = current_hp
+	update_hp_ui() # This handles the bar and the text label
+	
 	modulate = Color.GREEN
 	create_tween().tween_property(self, "modulate", Color.WHITE, 0.3)
 

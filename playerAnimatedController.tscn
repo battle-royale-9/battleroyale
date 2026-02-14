@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bwkcte2el5kli" path="res://images/playerAnim/Hit.png" id="4_weflv"]
 [ext_resource type="Texture2D" uid="uid://do17cipxsl33r" path="res://images/playerAnim/Idle.png" id="5_1qhei"]
 [ext_resource type="Texture2D" uid="uid://decbd02atleyp" path="res://images/playerAnim/Run.png" id="6_mhwia"]
+[ext_resource type="PackedScene" uid="uid://myvsswghxgp" path="res://spells/barrier.tscn" id="7_5wdo2"]
 [ext_resource type="Texture2D" uid="uid://nbudas1g7bwn" path="res://images/lock_icon.png" id="7_p8t1n"]
 [ext_resource type="Texture2D" uid="uid://b8yl3v2e3xjop" path="res://images/staff_cursor.png" id="8_8d5gg"]
 
@@ -284,6 +285,9 @@ bg_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dnqdc"]
 bg_color = Color(0.9999704, 0.10738065, 0.2793229, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_weflv"]
+outline_color = Color(0.0142752165, 0.014275218, 0.014275218, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_dnqdc"]
 font_size = 12
 
@@ -329,6 +333,8 @@ animation = &"idle"
 position = Vector2(-2, -0.5)
 shape = SubResource("RectangleShape2D_mm7dp")
 
+[node name="Barrier" parent="." unique_id=1522064716 instance=ExtResource("7_5wdo2")]
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=576124904]
 zoom = Vector2(3, 3)
 
@@ -348,6 +354,18 @@ grow_horizontal = 0
 grow_vertical = 0
 theme_override_styles/background = SubResource("StyleBoxFlat_deskq")
 theme_override_styles/fill = SubResource("StyleBoxFlat_dnqdc")
+show_percentage = false
+
+[node name="HPLabel" type="Label" parent="CanvasLayer/ProgressBar" unique_id=1385077412]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+label_settings = SubResource("LabelSettings_weflv")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="SpellBar" type="HBoxContainer" parent="CanvasLayer" unique_id=591568636]
 anchors_preset = 7
@@ -536,6 +554,6 @@ offset_right = 16.0
 offset_bottom = -15.0
 theme_override_styles/background = SubResource("StyleBoxFlat_8d5gg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_5wdo2")
-max_value = 0.3
+max_value = 0.5
 step = 0.0
 show_percentage = false

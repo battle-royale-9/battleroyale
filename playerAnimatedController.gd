@@ -2,11 +2,11 @@ extends CharacterBody2D
 
 const SPEED = 101.0
 const CURSOR_RADIUS = 80.0
-const CAST_TIME = 0.3 # Matching Player 1's telegraph time
+const CAST_TIME = 0.5 
 
 var key_history = ""
 var last_aim_direction = Vector2.RIGHT
-var is_casting = false # Tracks if we are currently winding up
+var is_casting = false 
 
 # --- HEALTH SETTINGS ---
 var max_hp = 50      
@@ -22,8 +22,10 @@ var spells_unlocked = {
 
 # --- UI NODES ---
 @onready var hp_bar = $CanvasLayer/ProgressBar
+@onready var hp_label = $CanvasLayer/ProgressBar/HPLabel # Added reference
 @onready var status_label = $spell_status
-@onready var cast_bar = $CastBar # Ensure this is a ProgressBar node
+@onready var cast_bar = $CastBar 
+@onready var barrier = $Barrier # Ensure your Barrier scene is instanced here!
 var status_start_pos = Vector2.ZERO
 
 # --- CURSOR NODE ---
@@ -68,8 +70,7 @@ var plant_scene = preload("res://spells/plant.tscn")
 func _ready():
 	anim.play("idle")
 	hp_bar.max_value = max_hp
-	hp_bar.value = current_hp
-	hp_bar.show_percentage = false 
+	update_hp_ui() # Initial UI update
 	
 	# Setup Cast Bar
 	cast_bar.visible = false
@@ -79,17 +80,23 @@ func _ready():
 	status_start_pos = status_label.position
 	status_label.visible = false
 	
-	# Initial UI Reset
 	_reset_ui()
-	
-	# Set initial cursor position
 	aim_cursor.position = last_aim_direction * CURSOR_RADIUS
 
 func _input(event):
+	# 1. BARRIER TOGGLE (Right Trigger / R2)
+	# Make sure you have "joy_barrier" defined in Input Map, 
+	# or replace with event.button_index == JOY_BUTTON_RIGHT_SHOULDER
+	if event.is_action("joy_barrier"):
+		if event.is_pressed():
+			barrier.activate()
+		else:
+			barrier.deactivate()
+
 	# Don't start a new combo if already casting
 	if is_casting: return
 
-	# 1. CONTROLLER BUTTON CHECKER
+	# 2. CONTROLLER BUTTON CHECKER
 	if event is InputEventJoypadButton and event.pressed:
 		if event.is_action("btn_x"): key_history += "X"
 		elif event.is_action("btn_y"): key_history += "Y"
@@ -98,20 +105,10 @@ func _input(event):
 		
 		if key_history.length() > 6: key_history = key_history.right(6)
 		
-		# Detect Combos and Start Wind-up
 		if key_history.ends_with("XY"): start_windup("23", fireball_scene, "cast")
 		elif key_history.ends_with("YB"): start_windup("WE", lightning_scene, "summon")
 		elif key_history.ends_with("BX"): start_windup("SD", beam_scene, "beam")
 		elif key_history.ends_with("AY"): start_windup("XC", plant_scene, "behind")
-
-	# Keyboard Cheat Codes
-	if event is InputEventKey and event.pressed:
-		var key_pressed = OS.get_keycode_string(event.keycode)
-		key_history += key_pressed
-		if key_history.length() > 10: key_history = key_history.right(10)
-		if key_history.ends_with("EPSTEIN"):
-			cast_spell(epstein_scene)
-			key_history = ""
 
 # --- WIND-UP SYSTEM ---
 
@@ -119,8 +116,6 @@ func start_windup(id, scene, type):
 	if spells_unlocked[id] and current_cooldowns[id] <= 0:
 		is_casting = true
 		key_history = ""
-		
-		# Visuals
 		cast_bar.value = 0
 		cast_bar.visible = true
 		
@@ -135,13 +130,11 @@ func start_windup(id, scene, type):
 func _release_spell(id, scene, type):
 	is_casting = false
 	cast_bar.visible = false
-	
 	match type:
 		"cast": cast_spell(scene)
 		"summon": summon_spell(scene)
 		"beam": cast_beam(scene)
 		"behind": cast_behind(scene)
-	
 	start_cooldown(id)
 
 # --- PHYSICS & MOVEMENT ---
@@ -149,7 +142,6 @@ func _release_spell(id, scene, type):
 func _physics_process(delta):
 	process_cooldowns(delta)
 
-	# --- 1. LEFT STICK MOVEMENT ---
 	var move_input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if move_input.length() > 0.1:
 		velocity = move_input * SPEED
@@ -161,9 +153,7 @@ func _physics_process(delta):
 			anim.play("idle")
 	move_and_slide()
 
-	# --- 2. RIGHT STICK AIMING & CURSOR ---
 	var aim_input = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
-	
 	if aim_input.length() > 0.1:
 		last_aim_direction = aim_input.normalized()
 	
@@ -174,6 +164,11 @@ func _physics_process(delta):
 		anim.flip_h = last_aim_direction.x < 0
 
 # --- UI & FEEDBACK ---
+
+func update_hp_ui():
+	hp_bar.value = current_hp
+	var display_hp = int(round(current_hp))
+	hp_label.text = str(display_hp) + " / " + str(max_hp)
 
 func _reset_ui():
 	update_overlay("23", 0)
@@ -231,14 +226,23 @@ func unlock_spell(code_name):
 # --- HEALTH & HELPERS ---
 
 func take_damage(amount):
-	# Interrupt spell if hit
+	var shield_status = barrier.get_shield_status()
+	
+	if shield_status == "PARRY":
+		show_status_text("Parried!")
+		return
+		
+	if shield_status == "BLOCK":
+		amount *= 0.8
+
 	if is_casting:
 		is_casting = false
 		cast_bar.visible = false
 		show_status_text("Interrupted!")
 
 	current_hp -= amount
-	hp_bar.value = current_hp
+	update_hp_ui()
+	
 	anim.play("hurt")
 	modulate = Color.RED
 	create_tween().tween_property(self, "modulate", Color.WHITE, 0.1)
@@ -246,7 +250,7 @@ func take_damage(amount):
 
 func heal(amount):
 	current_hp = min(current_hp + amount, max_hp)
-	hp_bar.value = current_hp
+	update_hp_ui()
 	modulate = Color.GREEN
 	create_tween().tween_property(self, "modulate", Color.WHITE, 0.3)
 
@@ -262,8 +266,7 @@ func is_attacking() -> bool:
 func play_attack_anim():
 	if not is_hurting():
 		anim.flip_h = last_aim_direction.x < 0
-		var attacks = ["attack1", "attack2"]
-		anim.play(attacks.pick_random())
+		anim.play(["attack1", "attack2"].pick_random())
 
 # --- SPELLCASTING FUNCTIONS ---
 
