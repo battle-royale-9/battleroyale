@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://cppwy1on67ohd" path="res://playerAnimated.tscn" id="4_l20gf"]
 [ext_resource type="Texture2D" uid="uid://22a5s38rk6yd" path="res://images/Tilesets/ashland/tf_B_ashlands_1.png" id="5_gjlcx"]
 [ext_resource type="PackedScene" uid="uid://dc6wmh0fbcp6q" path="res://dummy.tscn" id="6_gjlcx"]
+[ext_resource type="PackedScene" uid="uid://buqmnygvi1ri5" path="res://playerAnimatedController.tscn" id="8_yx57n"]
 [ext_resource type="PackedScene" uid="uid://c5a1v8y773lb4" path="res://book_spells/book_beam.tscn" id="10_bfa0f"]
 [ext_resource type="PackedScene" uid="uid://dxawtw6wk84pw" path="res://book_spells/book_fireball.tscn" id="11_yx57n"]
 [ext_resource type="PackedScene" uid="uid://dddh7eu8jyb62" path="res://book_spells/book_lightning.tscn" id="12_oql6p"]
@@ -2623,7 +2624,10 @@ tile_set = SubResource("TileSet_bfa0f")
 position = Vector2(324, 269)
 
 [node name="CharacterBody2D" parent="." unique_id=262399486 instance=ExtResource("4_l20gf")]
-position = Vector2(1, 1)
+position = Vector2(2, -88)
+
+[node name="Player2" parent="." unique_id=636849741 instance=ExtResource("8_yx57n")]
+position = Vector2(-2, 165)
 
 [node name="buildings" type="TileMapLayer" parent="." unique_id=1670697557]
 z_index = 1
@@ -2632,13 +2636,25 @@ tile_map_data = PackedByteArray("AAAEAAAAAQAMAAYAAAAEAAEAAQAMAAcAAAAEAAIAAQAMAAg
 tile_set = SubResource("TileSet_5p1gj")
 
 [node name="BookBeam" parent="." unique_id=1198535969 instance=ExtResource("10_bfa0f")]
-position = Vector2(-81, -39)
+position = Vector2(-81, -134)
 
 [node name="BookFireball" parent="." unique_id=1325973273 instance=ExtResource("11_yx57n")]
-position = Vector2(77, -34)
+position = Vector2(77, -129)
 
 [node name="BookLightning" parent="." unique_id=2011673632 instance=ExtResource("12_oql6p")]
-position = Vector2(87, 57)
+position = Vector2(87, -38)
 
 [node name="BookPlant" parent="." unique_id=1645286429 instance=ExtResource("13_h7oxj")]
-position = Vector2(-79, 48)
+position = Vector2(-79, -47)
+
+[node name="BookBeam2" parent="." unique_id=1857779710 instance=ExtResource("10_bfa0f")]
+position = Vector2(-81, 129)
+
+[node name="BookFireball2" parent="." unique_id=2058647024 instance=ExtResource("11_yx57n")]
+position = Vector2(77, 134)
+
+[node name="BookLightning2" parent="." unique_id=1368978816 instance=ExtResource("12_oql6p")]
+position = Vector2(87, 225)
+
+[node name="BookPlant2" parent="." unique_id=296452410 instance=ExtResource("13_h7oxj")]
+position = Vector2(-79, 216)

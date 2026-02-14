@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://c25kndw7rbuog"]
+
+[ext_resource type="Script" uid="uid://clcwej4s8qive" path="res://splitscreen_test.gd" id="1_4kk37"]
+[ext_resource type="PackedScene" uid="uid://d2ja2ta87ep8m" path="res://mapCreation.tscn" id="2_4n2nn"]
+
+[node name="HBoxContainer" type="HBoxContainer" unique_id=1548735658]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+script = ExtResource("1_4kk37")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=1183498142]
+layout_mode = 2
+size_flags_horizontal = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=821218391]
+handle_input_locally = false
+size = Vector2i(574, 648)
+render_target_update_mode = 4
+
+[node name="Node2D" parent="SubViewportContainer/SubViewport" unique_id=1930266404 instance=ExtResource("2_4n2nn")]
+
+[node name="SubViewportContainer2" type="SubViewportContainer" parent="." unique_id=913829691]
+layout_mode = 2
+size_flags_horizontal = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer2" unique_id=376086706]
+handle_input_locally = false
+size = Vector2i(574, 648)
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="SubViewportContainer2/SubViewport" unique_id=120633713]
+zoom = Vector2(3, 3)
