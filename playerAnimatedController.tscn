@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://do17cipxsl33r" path="res://images/playerAnim/Idle.png" id="5_1qhei"]
 [ext_resource type="Texture2D" uid="uid://decbd02atleyp" path="res://images/playerAnim/Run.png" id="6_mhwia"]
 [ext_resource type="Texture2D" uid="uid://nbudas1g7bwn" path="res://images/lock_icon.png" id="7_p8t1n"]
+[ext_resource type="Texture2D" uid="uid://b8yl3v2e3xjop" path="res://images/staff_cursor.png" id="8_8d5gg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bhlf4"]
 atlas = ExtResource("2_8d5gg")
@@ -303,7 +304,7 @@ font_color = Color(0.75547284, 0, 0.17080006, 1)
 [node name="CharacterBody2D" type="CharacterBody2D" unique_id=262399486]
 z_index = 1
 collision_layer = 2
-collision_mask = 21
+collision_mask = 3
 collision_priority = 5.0
 script = ExtResource("1_3i7kr")
 
@@ -506,3 +507,12 @@ text = "googoogaagaa"
 label_settings = SubResource("LabelSettings_l7a1p")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="AimCursor" type="Sprite2D" parent="." unique_id=1103398792]
+process_mode = 3
+visibility_layer = 4
+z_index = 10
+position = Vector2(72.33556, 19.853073)
+rotation = -2.3560085
+scale = Vector2(0.04450849, 0.04450849)
+texture = ExtResource("8_8d5gg")

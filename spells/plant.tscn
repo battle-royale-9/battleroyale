@@ -50,7 +50,7 @@ animations = [{
 size = Vector2(5, 29)
 
 [node name="Plant" type="Area2D" unique_id=1400531014]
-collision_layer = 8
+collision_layer = 4
 collision_mask = 2
 script = ExtResource("1_jr63p")
 

@@ -54,11 +54,11 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cep6t"]
-size = Vector2(83, 269)
+size = Vector2(123, 93.33333)
 
 [node name="Lightning" type="Area2D" unique_id=1919974372]
-collision_layer = 8
-collision_mask = 5
+collision_layer = 4
+collision_mask = 2
 script = ExtResource("1_888k8")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=897165078]
@@ -69,6 +69,6 @@ frame = 5
 frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1981741095]
-position = Vector2(-0.299999, -83)
+position = Vector2(0, -20)
 scale = Vector2(0.6, 0.6)
 shape = SubResource("RectangleShape2D_cep6t")

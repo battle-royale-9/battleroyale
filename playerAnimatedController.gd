@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 const SPEED = 101.0
+const CURSOR_RADIUS = 80.0 # Shrink this further if it's still too far
 var key_history = ""
 var last_aim_direction = Vector2.RIGHT # Default aim to the right
 
@@ -9,7 +10,6 @@ var max_hp = 50
 var current_hp = 50   
 
 # --- SPELL UNLOCKS ---
-# We keep the old IDs ("23", "WE") so your books still unlock them correctly.
 var spells_unlocked = {
 	"23": false, # Fireball (Combo: XY)
 	"WE": false, # Lightning (Combo: YB)
@@ -21,6 +21,9 @@ var spells_unlocked = {
 @onready var hp_bar = $CanvasLayer/ProgressBar
 @onready var status_label = $spell_status
 var status_start_pos = Vector2.ZERO
+
+# --- CURSOR NODE ---
+@onready var aim_cursor = $AimCursor
 
 # --- UI OVERLAYS & LOCKS ---
 @onready var overlay_fireball = $CanvasLayer/SpellBar/FireballBox/CooldownOverlay
@@ -60,7 +63,6 @@ var plant_scene = preload("res://spells/plant.tscn")
 
 func _ready():
 	anim.play("idle")
-	
 	hp_bar.max_value = max_hp
 	hp_bar.value = current_hp
 	hp_bar.show_percentage = false 
@@ -68,7 +70,7 @@ func _ready():
 	status_start_pos = status_label.position
 	status_label.visible = false
 	
-	# Update Locks & Overlays
+	# Initial UI Reset
 	update_overlay("23", 0)
 	update_overlay("WE", 0)
 	update_overlay("SD", 0)
@@ -78,59 +80,48 @@ func _ready():
 	lock_lightning.visible = true
 	lock_beam.visible = true
 	lock_plant.visible = true
+	
+	# Set initial cursor position
+	aim_cursor.position = last_aim_direction * CURSOR_RADIUS
 
 func _input(event):
 	# 1. CONTROLLER BUTTON CHECKER
 	if event is InputEventJoypadButton and event.pressed:
-		
-		# Map buttons to letters for key_history
 		if event.is_action("btn_x"): key_history += "X"
 		elif event.is_action("btn_y"): key_history += "Y"
 		elif event.is_action("btn_b"): key_history += "B"
 		elif event.is_action("btn_a"): key_history += "A"
 		
-		# Limit history length
-		if key_history.length() > 10: key_history = key_history.right(10)
+		# Shortened history for better performance
+		if key_history.length() > 6: key_history = key_history.right(6)
 		
-		# --- SPELL COMBO CHECKS ---
-		
-		# FIREBALL (XY) -> Uses old ID "23"
+		# --- SPELL COMBO CHECKS (Using elif to prevent lag) ---
 		if key_history.ends_with("XY"):
 			cast_spell_logic("23", fireball_scene, "cast")
-
-		# LIGHTNING (YB) -> Uses old ID "WE"
-		if key_history.ends_with("YB"):
+		elif key_history.ends_with("YB"):
 			cast_spell_logic("WE", lightning_scene, "summon")
-			
-		# BEAM (BX) -> Uses old ID "SD"
-		if key_history.ends_with("BX"):
+		elif key_history.ends_with("BX"):
 			cast_spell_logic("SD", beam_scene, "beam")
-
-		# PLANT (AY) -> Uses old ID "XC"
-		if key_history.ends_with("AY"):
+		elif key_history.ends_with("AY"):
 			cast_spell_logic("XC", plant_scene, "behind")
 
-	# Keep Keyboard support for other things (like cheat codes)
+	# Keyboard Cheat Codes
 	if event is InputEventKey and event.pressed:
 		var key_pressed = OS.get_keycode_string(event.keycode)
 		key_history += key_pressed
 		if key_history.length() > 10: key_history = key_history.right(10)
-		
 		if key_history.ends_with("EPSTEIN"):
 			cast_spell(epstein_scene)
 			key_history = ""
 
-# Wrapper function to clean up the repeated logic above
 func cast_spell_logic(id, scene, type):
-	if spells_unlocked[id] == true:
+	if spells_unlocked[id]:
 		if current_cooldowns[id] <= 0:
-			# Execute the specific type of cast
 			if type == "cast": cast_spell(scene)
 			elif type == "summon": summon_spell(scene)
 			elif type == "beam": cast_beam(scene)
 			elif type == "behind": cast_behind(scene)
-			
-			start_cooldown(id)         
+			start_cooldown(id)          
 			key_history = ""
 		else:
 			show_status_text("Cooldown!")
@@ -142,45 +133,42 @@ func _physics_process(delta):
 
 	# --- 1. LEFT STICK MOVEMENT ---
 	var move_input = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	
-	if move_input.length() > 0:
+	if move_input.length() > 0.1:
 		velocity = move_input * SPEED
-		anim.play("run")
+		if not is_attacking():
+			anim.play("run")
 	else:
 		velocity = Vector2.ZERO
 		if not is_attacking() and not is_hurting():
 			anim.play("idle")
-			
 	move_and_slide()
 
-	# --- 2. RIGHT STICK AIMING ---
+	# --- 2. RIGHT STICK AIMING & CURSOR ---
 	var aim_input = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
 	
-	# Only update aim if the stick is actually moving
 	if aim_input.length() > 0.1:
 		last_aim_direction = aim_input.normalized()
 	
-	# Flip sprite based on AIM, not movement (allows strafing)
+	# Always keep the cursor positioned and rotated relative to the player
+	# This ensures it "follows" you perfectly even when the stick is neutral
+	aim_cursor.position = last_aim_direction * CURSOR_RADIUS
+	aim_cursor.rotation = last_aim_direction.angle()
+	
+	# Flip sprite based on AIM
 	if not is_attacking() and not is_hurting():
-		if last_aim_direction.x < 0:
-			anim.flip_h = true
-		elif last_aim_direction.x > 0:
-			anim.flip_h = false
+		anim.flip_h = last_aim_direction.x < 0
 
-# --- VISUAL FEEDBACK ---
+# --- VISUAL FEEDBACK & COOLDOWNS ---
 
 func show_status_text(text_content):
 	status_label.text = text_content
 	status_label.position = status_start_pos
 	status_label.modulate.a = 1.0 
 	status_label.visible = true
-	
 	var tween = create_tween()
 	tween.tween_property(status_label, "position:y", -30.0, 0.8).as_relative()
 	tween.parallel().tween_property(status_label, "modulate:a", 0.0, 0.8)
 	tween.tween_callback(status_label.hide)
-
-# --- COOLDOWN LOGIC ---
 
 func start_cooldown(combo_key):
 	current_cooldowns[combo_key] = MAX_COOLDOWNS[combo_key]
@@ -203,33 +191,26 @@ func update_overlay(key, percentage):
 		"WE": target_overlay = overlay_lightning
 		"SD": target_overlay = overlay_beam
 		"XC": target_overlay = overlay_plant 
-	
-	if target_overlay:
-		target_overlay.value = percentage
-
-# --- UNLOCK LOGIC ---
+	if target_overlay: target_overlay.value = percentage
 
 func unlock_spell(code_name):
 	if code_name in spells_unlocked:
 		spells_unlocked[code_name] = true
-		print("SPELL UNLOCKED: ", code_name)
 		show_status_text("Unlocked!")
-		
 		match code_name:
 			"23": lock_fireball.visible = false
 			"WE": lock_lightning.visible = false
 			"SD": lock_beam.visible = false
 			"XC": lock_plant.visible = false
 
-# --- HEALTH FUNCTIONS ---
+# --- HEALTH & HELPERS ---
 
 func take_damage(amount):
 	current_hp -= amount
 	hp_bar.value = current_hp
 	anim.play("hurt")
 	modulate = Color.RED
-	var tween = create_tween()
-	tween.tween_property(self, "modulate", Color.WHITE, 0.1)
+	create_tween().tween_property(self, "modulate", Color.WHITE, 0.1)
 	if current_hp <= 0: die()
 
 func heal(amount):
@@ -237,14 +218,10 @@ func heal(amount):
 	if current_hp > max_hp: current_hp = max_hp
 	hp_bar.value = current_hp
 	modulate = Color.GREEN
-	var tween = create_tween()
-	tween.tween_property(self, "modulate", Color.WHITE, 0.3)
+	create_tween().tween_property(self, "modulate", Color.WHITE, 0.3)
 
 func die():
-	print("Player Died!")
 	get_tree().reload_current_scene()
-
-# --- HELPER FUNCTIONS ---
 
 func is_hurting() -> bool:
 	return anim.animation == "hurt" and anim.is_playing()
@@ -254,11 +231,7 @@ func is_attacking() -> bool:
 
 func play_attack_anim():
 	if not is_hurting():
-		# Face the direction we are aiming
-		if last_aim_direction.x < 0:
-			anim.flip_h = true 
-		else:
-			anim.flip_h = false 
+		anim.flip_h = last_aim_direction.x < 0
 		var attacks = ["attack1", "attack2"]
 		anim.play(attacks.pick_random())
 
@@ -266,26 +239,34 @@ func play_attack_anim():
 
 func cast_spell(spell_to_cast):
 	play_attack_anim() 
-	var spell_instance = spell_to_cast.instantiate()
-	spell_instance.position = position
-	spell_instance.direction = last_aim_direction
-	get_parent().add_child(spell_instance)
+	var spell = spell_to_cast.instantiate()
+	get_parent().add_child(spell)
+	spell.global_position = global_position
+	if spell.has_method("setup"):
+		spell.setup(self, last_aim_direction)
 
 func summon_spell(spell_to_summon):
 	play_attack_anim() 
-	var spell_instance = spell_to_summon.instantiate()
-	spell_instance.position = position + (last_aim_direction * 150)
-	get_parent().add_child(spell_instance)
+	var spell = spell_to_summon.instantiate()
+	get_parent().add_child(spell)
+	# Spawns EXACTLY where the cursor is
+	spell.global_position = aim_cursor.global_position
+	if spell.has_method("setup"):
+		spell.setup(self)
 
 func cast_beam(spell_to_cast):
 	play_attack_anim() 
-	var spell_instance = spell_to_cast.instantiate()
-	spell_instance.position = position
-	spell_instance.rotation = last_aim_direction.angle()
-	get_parent().add_child(spell_instance)
+	var spell = spell_to_cast.instantiate()
+	get_parent().add_child(spell)
+	spell.global_position = global_position
+	spell.rotation = last_aim_direction.angle()
+	if spell.has_method("setup"):
+		spell.setup(self, spell.rotation)
 
 func cast_behind(spell_to_cast):
 	play_attack_anim()
-	var spell_instance = spell_to_cast.instantiate()
-	spell_instance.position = position + Vector2(0, -20)
-	get_parent().add_child(spell_instance)
+	var spell = spell_to_cast.instantiate()
+	get_parent().add_child(spell)
+	spell.global_position = global_position
+	if spell.has_method("setup"):
+		spell.setup(self)

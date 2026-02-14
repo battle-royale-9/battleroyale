@@ -8,7 +8,7 @@ const RESET_TIME = 3.0
 # --- ATTACKING ---
 var attack_timer = 0.0
 const ATTACK_INTERVAL = 2.0 # Fire every 2 seconds
-var fireball_scene = preload("res://spells_enemy/fireball.tscn")
+var fireball_scene = preload("res://spells/fireball.tscn")
 
 @onready var damage_label = $Label 
 
