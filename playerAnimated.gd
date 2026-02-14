@@ -1,8 +1,11 @@
 extends CharacterBody2D
 
 const SPEED = 101.0
+const CAST_TIME = 0.3 # Duration of the wind-up/telegraph
+
 var target_position = Vector2.ZERO
 var key_history = ""
+var is_casting = false # Tracks if we are currently winding up
 
 # --- HEALTH SETTINGS ---
 var max_hp = 50      
@@ -19,6 +22,7 @@ var spells_unlocked = {
 # --- UI NODES ---
 @onready var hp_bar = $CanvasLayer/ProgressBar
 @onready var status_label = $spell_status
+@onready var cast_bar = $CastBar # Set this to Fill: Yellow in Inspector
 var status_start_pos = Vector2.ZERO 
 
 # --- SPELL UI NODES (COOLDOWNS) ---
@@ -33,7 +37,7 @@ var status_start_pos = Vector2.ZERO
 @onready var lock_beam = $CanvasLayer/SpellBar/BeamBox/LockIcon
 @onready var lock_plant = $CanvasLayer/SpellBar/PlantBox/LockIcon
 
-# --- CURSOR NODE (NEW!) ---
+# --- CURSOR NODE ---
 @onready var aim_cursor = $AimCursor
 
 # --- COOLDOWN SETTINGS ---
@@ -69,120 +73,93 @@ func _ready():
 	hp_bar.value = current_hp
 	hp_bar.show_percentage = false 
 	
-	# Setup Status Label
+	# Setup Cast Bar
+	cast_bar.visible = false
+	cast_bar.max_value = CAST_TIME
+	cast_bar.value = 0
+	
 	status_start_pos = status_label.position 
 	status_label.visible = false 
 	
-	# Reset overlays
-	update_overlay("23", 0)
-	update_overlay("WE", 0)
-	update_overlay("SD", 0)
-	update_overlay("XC", 0)
-	
-	# Ensure Locks are VISIBLE at start
-	lock_fireball.visible = true
-	lock_lightning.visible = true
-	lock_beam.visible = true
-	lock_plant.visible = true
-	
-	# Hide the Windows Mouse (so we only see our custom cursor)
+	_reset_ui()
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
 func _input(event):
-	# 1. COMBO CHECKER
+	# Allow movement clicks even while casting
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		target_position = get_global_mouse_position()
+
+	# Don't start a NEW spell combo if already winding one up
+	if is_casting: return
+
 	if event is InputEventKey and event.pressed and not event.echo:
 		var key_pressed = OS.get_keycode_string(event.keycode)
 		key_history += key_pressed
 		
-		# Shorten history to 6 characters for faster string matching
 		if key_history.length() > 6: 
 			key_history = key_history.right(6)
 		
-		# --- SPELL CHECKS (Using elif to save CPU) ---
-		
-		# FIREBALL ("23")
-		if key_history.ends_with("23"):
-			if spells_unlocked["23"]:
-				if current_cooldowns["23"] <= 0:
-					cast_spell(fireball_scene) 
-					start_cooldown("23")          
-					key_history = ""
-				else:
-					show_status_text("Cooldown!")
-			else:
-				show_status_text("Locked!")
-
-		# LIGHTNING ("WE")
-		elif key_history.ends_with("WE"):
-			if spells_unlocked["WE"]:
-				if current_cooldowns["WE"] <= 0:
-					summon_spell(lightning_scene) 
-					start_cooldown("WE")
-					key_history = ""
-				else:
-					show_status_text("Cooldown!")
-			else:
-				show_status_text("Locked!")
-				
-		# BEAM ("SD")
-		elif key_history.ends_with("SD"):
-			if spells_unlocked["SD"]:
-				if current_cooldowns["SD"] <= 0:
-					cast_beam(beam_scene) 
-					start_cooldown("SD")
-					key_history = ""
-				else:
-					show_status_text("Cooldown!")
-			else:
-				show_status_text("Locked!")
-
-		# PLANT ("XC")
-		elif key_history.ends_with("XC"):
-			if spells_unlocked["XC"]:
-				if current_cooldowns["XC"] <= 0:
-					cast_behind(plant_scene) 
-					start_cooldown("XC")
-					key_history = ""
-				else:
-					show_status_text("Cooldown!")
-			else:
-				show_status_text("Locked!")
-
-		# CHEAT CODES (Checking specifically for longer strings)
+		if key_history.ends_with("23"): start_windup("23", fireball_scene, "cast")
+		elif key_history.ends_with("WE"): start_windup("WE", lightning_scene, "summon")
+		elif key_history.ends_with("SD"): start_windup("SD", beam_scene, "beam")
+		elif key_history.ends_with("XC"): start_windup("XC", plant_scene, "behind")
 		elif key_history.ends_with("EPSTEIN"):
 			cast_spell(epstein_scene)
 			key_history = ""
 
-	# 2. MOVEMENT CLICK
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		target_position = get_global_mouse_position()
+# --- WIND-UP SYSTEM (NON-BLOCKING MOVEMENT) ---
+
+func start_windup(id, scene, type):
+	if spells_unlocked[id] and current_cooldowns[id] <= 0:
+		is_casting = true
+		key_history = ""
+		
+		# Visuals
+		cast_bar.value = 0
+		cast_bar.visible = true
+		
+		var tween = create_tween()
+		# Fills left-to-right over CAST_TIME
+		tween.tween_property(cast_bar, "value", CAST_TIME, CAST_TIME)
+		tween.finished.connect(func(): _release_spell(id, scene, type))
+	elif not spells_unlocked[id]:
+		show_status_text("Locked!")
+	else:
+		show_status_text("Cooldown!")
+
+func _release_spell(id, scene, type):
+	is_casting = false
+	cast_bar.visible = false
+	
+	match type:
+		"cast": cast_spell(scene)
+		"summon": summon_spell(scene)
+		"beam": cast_beam(scene)
+		"behind": cast_behind(scene)
+	
+	start_cooldown(id)
+
+# --- PHYSICS & MOVEMENT ---
 
 func _physics_process(delta):
 	process_cooldowns(delta)
 
-	# --- 1. HANDLE MOVEMENT ---
 	var is_moving = false
 	
+	# MOVEMENT FIX: Removed "if not is_casting" so you can move while winding up
 	if position.distance_to(target_position) > 5:
 		velocity = position.direction_to(target_position) * SPEED
 		move_and_slide()
 		is_moving = true
 		
 		if not is_attacking(): 
-			if velocity.x < 0:
-				anim.flip_h = true
-			elif velocity.x > 0:
-				anim.flip_h = false
+			anim.flip_h = velocity.x < 0
 	else:
 		velocity = Vector2.ZERO
 		is_moving = false
 
-	# --- 2. HANDLE ANIMATION STATE ---
-	if is_hurting(): return   
-	if is_attacking(): return 
+	if is_hurting() or is_attacking(): return 
 	
-	# --- 3. UPDATE CURSOR POSITION (NEW!) ---
-	# This forces the AimCursor sprite to stick to the mouse
 	if aim_cursor:
 		aim_cursor.global_position = get_global_mouse_position()
 
@@ -191,20 +168,27 @@ func _physics_process(delta):
 	else:
 		anim.play("idle")
 
-# --- VISUAL FEEDBACK ---
+# --- UI & FEEDBACK ---
+
+func _reset_ui():
+	update_overlay("23", 0)
+	update_overlay("WE", 0)
+	update_overlay("SD", 0)
+	update_overlay("XC", 0)
+	lock_fireball.visible = true
+	lock_lightning.visible = true
+	lock_beam.visible = true
+	lock_plant.visible = true
 
 func show_status_text(text_content):
 	status_label.text = text_content
 	status_label.position = status_start_pos
 	status_label.modulate.a = 1.0 
 	status_label.visible = true
-	
 	var tween = create_tween()
 	tween.tween_property(status_label, "position:y", -30.0, 0.8).as_relative()
 	tween.parallel().tween_property(status_label, "modulate:a", 0.0, 0.8)
 	tween.tween_callback(status_label.hide)
-
-# --- COOLDOWN LOGIC ---
 
 func start_cooldown(combo_key):
 	current_cooldowns[combo_key] = MAX_COOLDOWNS[combo_key]
@@ -222,132 +206,85 @@ func process_cooldowns(delta):
 
 func update_overlay(key, percentage):
 	var target_overlay = null
-	
 	match key:
 		"23": target_overlay = overlay_fireball
 		"WE": target_overlay = overlay_lightning
 		"SD": target_overlay = overlay_beam
 		"XC": target_overlay = overlay_plant 
-	
-	if target_overlay:
-		target_overlay.value = percentage
-
-# --- UNLOCK LOGIC ---
+	if target_overlay: target_overlay.value = percentage
 
 func unlock_spell(code_name):
 	if code_name in spells_unlocked:
 		spells_unlocked[code_name] = true
-		print("SPELL UNLOCKED: ", code_name)
-		
 		show_status_text("Unlocked!")
-		
 		match code_name:
 			"23": lock_fireball.visible = false
 			"WE": lock_lightning.visible = false
 			"SD": lock_beam.visible = false
 			"XC": lock_plant.visible = false
 
-# --- HEALTH FUNCTIONS ---
+# --- HEALTH ---
 
 func take_damage(amount):
+	if is_casting:
+		is_casting = false
+		cast_bar.visible = false
+		show_status_text("Interrupted!")
+
 	current_hp -= amount
 	hp_bar.value = current_hp
 	anim.play("hurt")
 	modulate = Color.RED
-	var tween = create_tween()
-	tween.tween_property(self, "modulate", Color.WHITE, 0.1)
+	create_tween().tween_property(self, "modulate", Color.WHITE, 0.1)
 	if current_hp <= 0: die()
 
 func heal(amount):
-	current_hp += amount
-	if current_hp > max_hp:
-		current_hp = max_hp
+	current_hp = min(current_hp + amount, max_hp)
 	hp_bar.value = current_hp
-	
 	modulate = Color.GREEN
-	var tween = create_tween()
-	tween.tween_property(self, "modulate", Color.WHITE, 0.3)
-	print("Healed! Current HP: ", current_hp)
+	create_tween().tween_property(self, "modulate", Color.WHITE, 0.3)
 
 func die():
-	print("Player Died!")
 	get_tree().reload_current_scene()
 
-# --- HELPER FUNCTIONS ---
+# --- HELPERS ---
 
-func is_hurting() -> bool:
-	if anim.animation == "hurt" and anim.is_playing():
-		return true
-	return false
-
-func is_attacking() -> bool:
-	if (anim.animation == "attack1" or anim.animation == "attack2") and anim.is_playing():
-		return true
-	return false
+func is_hurting() -> bool: return anim.animation == "hurt" and anim.is_playing()
+func is_attacking() -> bool: return (anim.animation == "attack1" or anim.animation == "attack2") and anim.is_playing()
 
 func play_attack_anim():
 	if not is_hurting():
-		if get_global_mouse_position().x < position.x:
-			anim.flip_h = true 
-		else:
-			anim.flip_h = false 
-		var attacks = ["attack1", "attack2"]
-		anim.play(attacks.pick_random())
+		anim.flip_h = get_global_mouse_position().x < position.x
+		anim.play(["attack1", "attack2"].pick_random())
 
-# --- SPELLCASTING FUNCTIONS (UPDATED FOR UNIVERSAL SPELLS) ---
+# --- SPELLCASTING ---
 
-# 1. FIREBALL (Moving Projectile)
 func cast_spell(spell_to_cast):
 	play_attack_anim() 
 	var spell = spell_to_cast.instantiate()
-	get_parent().add_child(spell) # Add to tree FIRST
-	spell.global_position = global_position # Spawn at player
-	
-	# Calculate Direction
-	var mouse_pos = get_global_mouse_position()
-	var direction_vector = (mouse_pos - global_position).normalized()
-	
-	# CRITICAL: Tell the spell who shot it!
-	if spell.has_method("setup"):
-		spell.setup(self, direction_vector)
-	else:
-		# Fallback for old spells (like Epstein) if they don't have setup
-		spell.direction = direction_vector
+	get_parent().add_child(spell)
+	spell.global_position = global_position
+	var direction = (get_global_mouse_position() - global_position).normalized()
+	if spell.has_method("setup"): spell.setup(self, direction)
 
-# 2. LIGHTNING (Mouse Position Summon)
 func summon_spell(spell_to_summon):
 	play_attack_anim() 
 	var spell = spell_to_summon.instantiate()
 	get_parent().add_child(spell)
-	spell.global_position = get_global_mouse_position() # Spawn at Mouse
-	
-	# CRITICAL: Tell lightning who cast it (so you don't zap yourself)
-	if spell.has_method("setup"):
-		spell.setup(self)
+	spell.global_position = get_global_mouse_position()
+	if spell.has_method("setup"): spell.setup(self)
 
-# 3. BEAM (Directional Ray)
 func cast_beam(spell_to_cast):
 	play_attack_anim() 
 	var spell = spell_to_cast.instantiate()
 	get_parent().add_child(spell)
 	spell.global_position = global_position
-	
-	# Rotate to face mouse
 	spell.look_at(get_global_mouse_position())
-	
-	# CRITICAL: Pass 'self' and the rotation
-	if spell.has_method("setup"):
-		spell.setup(self, spell.rotation)
+	if spell.has_method("setup"): spell.setup(self, spell.rotation)
 
-# 4. PLANT (Spawn at Feet)
 func cast_behind(spell_to_cast):
 	play_attack_anim()
 	var spell = spell_to_cast.instantiate()
 	get_parent().add_child(spell)
-	
-	# Spawn exactly at feet (or slightly offset if you prefer)
 	spell.global_position = global_position 
-	
-	# CRITICAL: Pass 'self' so it knows to HEAL you
-	if spell.has_method("setup"):
-		spell.setup(self)
+	if spell.has_method("setup"): spell.setup(self)

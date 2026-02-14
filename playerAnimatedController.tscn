@@ -301,6 +301,18 @@ font_size = 12
 font_size = 96
 font_color = Color(0.75547284, 0, 0.17080006, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8d5gg"]
+bg_color = Color(0, 0, 0, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5wdo2"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.75686276, 0.84705883, 0.19607843, 1)
+anti_aliasing = false
+
 [node name="CharacterBody2D" type="CharacterBody2D" unique_id=262399486]
 z_index = 1
 collision_layer = 2
@@ -512,7 +524,18 @@ vertical_alignment = 1
 process_mode = 3
 visibility_layer = 4
 z_index = 10
-position = Vector2(72.33556, 19.853073)
+position = Vector2(521, 227)
 rotation = -2.3560085
 scale = Vector2(0.04450849, 0.04450849)
 texture = ExtResource("8_8d5gg")
+
+[node name="CastBar" type="ProgressBar" parent="." unique_id=1575738389]
+offset_left = -17.0
+offset_top = -19.0
+offset_right = 16.0
+offset_bottom = -15.0
+theme_override_styles/background = SubResource("StyleBoxFlat_8d5gg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_5wdo2")
+max_value = 0.3
+step = 0.0
+show_percentage = false

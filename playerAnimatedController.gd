@@ -1,9 +1,12 @@
 extends CharacterBody2D
 
 const SPEED = 101.0
-const CURSOR_RADIUS = 80.0 # Shrink this further if it's still too far
+const CURSOR_RADIUS = 80.0
+const CAST_TIME = 0.3 # Matching Player 1's telegraph time
+
 var key_history = ""
-var last_aim_direction = Vector2.RIGHT # Default aim to the right
+var last_aim_direction = Vector2.RIGHT
+var is_casting = false # Tracks if we are currently winding up
 
 # --- HEALTH SETTINGS ---
 var max_hp = 50      
@@ -20,6 +23,7 @@ var spells_unlocked = {
 # --- UI NODES ---
 @onready var hp_bar = $CanvasLayer/ProgressBar
 @onready var status_label = $spell_status
+@onready var cast_bar = $CastBar # Ensure this is a ProgressBar node
 var status_start_pos = Vector2.ZERO
 
 # --- CURSOR NODE ---
@@ -67,24 +71,24 @@ func _ready():
 	hp_bar.value = current_hp
 	hp_bar.show_percentage = false 
 	
+	# Setup Cast Bar
+	cast_bar.visible = false
+	cast_bar.max_value = CAST_TIME
+	cast_bar.value = 0
+	
 	status_start_pos = status_label.position
 	status_label.visible = false
 	
 	# Initial UI Reset
-	update_overlay("23", 0)
-	update_overlay("WE", 0)
-	update_overlay("SD", 0)
-	update_overlay("XC", 0)
-	
-	lock_fireball.visible = true
-	lock_lightning.visible = true
-	lock_beam.visible = true
-	lock_plant.visible = true
+	_reset_ui()
 	
 	# Set initial cursor position
 	aim_cursor.position = last_aim_direction * CURSOR_RADIUS
 
 func _input(event):
+	# Don't start a new combo if already casting
+	if is_casting: return
+
 	# 1. CONTROLLER BUTTON CHECKER
 	if event is InputEventJoypadButton and event.pressed:
 		if event.is_action("btn_x"): key_history += "X"
@@ -92,18 +96,13 @@ func _input(event):
 		elif event.is_action("btn_b"): key_history += "B"
 		elif event.is_action("btn_a"): key_history += "A"
 		
-		# Shortened history for better performance
 		if key_history.length() > 6: key_history = key_history.right(6)
 		
-		# --- SPELL COMBO CHECKS (Using elif to prevent lag) ---
-		if key_history.ends_with("XY"):
-			cast_spell_logic("23", fireball_scene, "cast")
-		elif key_history.ends_with("YB"):
-			cast_spell_logic("WE", lightning_scene, "summon")
-		elif key_history.ends_with("BX"):
-			cast_spell_logic("SD", beam_scene, "beam")
-		elif key_history.ends_with("AY"):
-			cast_spell_logic("XC", plant_scene, "behind")
+		# Detect Combos and Start Wind-up
+		if key_history.ends_with("XY"): start_windup("23", fireball_scene, "cast")
+		elif key_history.ends_with("YB"): start_windup("WE", lightning_scene, "summon")
+		elif key_history.ends_with("BX"): start_windup("SD", beam_scene, "beam")
+		elif key_history.ends_with("AY"): start_windup("XC", plant_scene, "behind")
 
 	# Keyboard Cheat Codes
 	if event is InputEventKey and event.pressed:
@@ -114,19 +113,38 @@ func _input(event):
 			cast_spell(epstein_scene)
 			key_history = ""
 
-func cast_spell_logic(id, scene, type):
-	if spells_unlocked[id]:
-		if current_cooldowns[id] <= 0:
-			if type == "cast": cast_spell(scene)
-			elif type == "summon": summon_spell(scene)
-			elif type == "beam": cast_beam(scene)
-			elif type == "behind": cast_behind(scene)
-			start_cooldown(id)          
-			key_history = ""
-		else:
-			show_status_text("Cooldown!")
-	else:
+# --- WIND-UP SYSTEM ---
+
+func start_windup(id, scene, type):
+	if spells_unlocked[id] and current_cooldowns[id] <= 0:
+		is_casting = true
+		key_history = ""
+		
+		# Visuals
+		cast_bar.value = 0
+		cast_bar.visible = true
+		
+		var tween = create_tween()
+		tween.tween_property(cast_bar, "value", CAST_TIME, CAST_TIME)
+		tween.finished.connect(func(): _release_spell(id, scene, type))
+	elif not spells_unlocked[id]:
 		show_status_text("Locked!")
+	else:
+		show_status_text("Cooldown!")
+
+func _release_spell(id, scene, type):
+	is_casting = false
+	cast_bar.visible = false
+	
+	match type:
+		"cast": cast_spell(scene)
+		"summon": summon_spell(scene)
+		"beam": cast_beam(scene)
+		"behind": cast_behind(scene)
+	
+	start_cooldown(id)
+
+# --- PHYSICS & MOVEMENT ---
 
 func _physics_process(delta):
 	process_cooldowns(delta)
@@ -149,16 +167,23 @@ func _physics_process(delta):
 	if aim_input.length() > 0.1:
 		last_aim_direction = aim_input.normalized()
 	
-	# Always keep the cursor positioned and rotated relative to the player
-	# This ensures it "follows" you perfectly even when the stick is neutral
 	aim_cursor.position = last_aim_direction * CURSOR_RADIUS
 	aim_cursor.rotation = last_aim_direction.angle()
 	
-	# Flip sprite based on AIM
 	if not is_attacking() and not is_hurting():
 		anim.flip_h = last_aim_direction.x < 0
 
-# --- VISUAL FEEDBACK & COOLDOWNS ---
+# --- UI & FEEDBACK ---
+
+func _reset_ui():
+	update_overlay("23", 0)
+	update_overlay("WE", 0)
+	update_overlay("SD", 0)
+	update_overlay("XC", 0)
+	lock_fireball.visible = true
+	lock_lightning.visible = true
+	lock_beam.visible = true
+	lock_plant.visible = true
 
 func show_status_text(text_content):
 	status_label.text = text_content
@@ -206,6 +231,12 @@ func unlock_spell(code_name):
 # --- HEALTH & HELPERS ---
 
 func take_damage(amount):
+	# Interrupt spell if hit
+	if is_casting:
+		is_casting = false
+		cast_bar.visible = false
+		show_status_text("Interrupted!")
+
 	current_hp -= amount
 	hp_bar.value = current_hp
 	anim.play("hurt")
@@ -214,8 +245,7 @@ func take_damage(amount):
 	if current_hp <= 0: die()
 
 func heal(amount):
-	current_hp += amount
-	if current_hp > max_hp: current_hp = max_hp
+	current_hp = min(current_hp + amount, max_hp)
 	hp_bar.value = current_hp
 	modulate = Color.GREEN
 	create_tween().tween_property(self, "modulate", Color.WHITE, 0.3)
@@ -249,7 +279,6 @@ func summon_spell(spell_to_summon):
 	play_attack_anim() 
 	var spell = spell_to_summon.instantiate()
 	get_parent().add_child(spell)
-	# Spawns EXACTLY where the cursor is
 	spell.global_position = aim_cursor.global_position
 	if spell.has_method("setup"):
 		spell.setup(self)
