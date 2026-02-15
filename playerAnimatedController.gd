@@ -120,13 +120,13 @@ func _input(event):
 		if key_history.length() > 8: key_history = key_history.right(8)
 		
 		# --- ULTIMATE CHECK ---
-		if key_history.ends_with("XYAB"): 
+		if key_history.ends_with("XABY"): 
 			start_windup("XYAB", meteor_scene, "summon", CAST_TIME * 2.0)
-		elif key_history.ends_with("YBXA"): 
+		elif key_history.ends_with("YBAX"): 
 			start_windup("YBXA", tornado_scene, "summon", CAST_TIME * 2.0)
 		elif key_history.ends_with("BXYA"): 
 			start_windup("BXYA", big_beam_scene, "beam", CAST_TIME * 2.0)
-		elif key_history.ends_with("AYBX"): 
+		elif key_history.ends_with("AYXB"): 
 			start_windup("AYBX", poison_scene, "center", CAST_TIME * 2.0)
 
 		# --- BASIC SPELL CHECK ---
