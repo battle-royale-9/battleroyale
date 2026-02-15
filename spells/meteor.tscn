@@ -1,0 +1,138 @@
+[gd_scene format=3 uid="uid://cs30550x6akjg"]
+
+[ext_resource type="Script" uid="uid://b26vol3ggjlv4" path="res://spells/meteor.gd" id="1_2kqd4"]
+[ext_resource type="Texture2D" uid="uid://753i6wocxv0p" path="res://images/spells/meteor1.png" id="1_by5y1"]
+[ext_resource type="Texture2D" uid="uid://bk7nwdclc7ufq" path="res://images/spells/meteor2.png" id="2_2kqd4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jn04u"]
+atlas = ExtResource("1_by5y1")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bxhpk"]
+atlas = ExtResource("1_by5y1")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xpxp1"]
+atlas = ExtResource("1_by5y1")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ib74m"]
+atlas = ExtResource("1_by5y1")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_itlh8"]
+atlas = ExtResource("1_by5y1")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c4bi4"]
+atlas = ExtResource("1_by5y1")
+region = Rect2(0, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b8gsk"]
+atlas = ExtResource("1_by5y1")
+region = Rect2(128, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rxemi"]
+atlas = ExtResource("1_by5y1")
+region = Rect2(256, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yxf5b"]
+atlas = ExtResource("2_2kqd4")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rthah"]
+atlas = ExtResource("2_2kqd4")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rdsma"]
+atlas = ExtResource("2_2kqd4")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p6am3"]
+atlas = ExtResource("2_2kqd4")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yawcj"]
+atlas = ExtResource("2_2kqd4")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rbpeh"]
+atlas = ExtResource("2_2kqd4")
+region = Rect2(0, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mhs5d"]
+atlas = ExtResource("2_2kqd4")
+region = Rect2(128, 128, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4pqng"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jn04u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bxhpk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xpxp1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ib74m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_itlh8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c4bi4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b8gsk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rxemi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yxf5b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rthah")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rdsma")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6am3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yawcj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rbpeh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mhs5d")
+}],
+"loop": false,
+"name": &"default",
+"speed": 6.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nn285"]
+radius = 46.173584
+
+[node name="Meteor" type="Area2D" unique_id=573426588]
+collision_layer = 4
+collision_mask = 10
+script = ExtResource("1_2kqd4")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1195995727]
+position = Vector2(46, -65)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_4pqng")
+frame = 14
+frame_progress = 1.0
+speed_scale = 3.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=256256331]
+position = Vector2(4, -13)
+shape = SubResource("CircleShape2D_nn285")

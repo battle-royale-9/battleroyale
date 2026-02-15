@@ -2,8 +2,8 @@ extends Area2D
 
 var direction = Vector2.RIGHT
 @export var speed = 700.0 
-var damage = 10 
-var shooter_node = null # <--- STORES WHO SHOT THIS
+var damage = 10 # This is the BASE damage
+var shooter_node = null 
 
 func _ready():
 	# 1. Rotate to face movement direction
@@ -20,34 +20,37 @@ func _ready():
 func _physics_process(delta):
 	position += direction * speed * delta
 
-# --- SETUP FUNCTION (CRITICAL) ---
-# Call this from your Player/Enemy script immediately after spawning!
+# --- SETUP FUNCTION (UPDATED) ---
 func setup(who_shot_me, move_direction):
 	shooter_node = who_shot_me
 	direction = move_direction
-	rotation = direction.angle() # Updates rotation instantly
+	rotation = direction.angle() 
+
+	# --- DAMAGE SCALING LOGIC ---
+	# We check if the shooter (the Player) has the book multiplier function
+	if shooter_node.has_method("get_damage_multiplier"):
+		# "23" is the ID for Fireball in your Player script
+		var multiplier = shooter_node.get_damage_multiplier("23")
+		
+		# Apply the multiplier (e.g., 10 * 1.2 = 12 damage)
+		damage = int(damage * multiplier)
+		
+		# Optional: Print to console so you can verify it works
+		print("Fireball Cast! Multiplier: ", multiplier, " | Final Damage: ", damage)
 
 # --- COLLISION LOGIC ---
 
-# 4. HIT AN AREA (Like Hitboxes or Dummies)
 func _on_hit_area(area_we_touched):
-	# Friendly Fire Check: Ignore the shooter's own hitboxes
-	if area_we_touched == shooter_node:
-		return
+	if area_we_touched == shooter_node: return
 
 	if area_we_touched.has_method("take_damage"):
 		area_we_touched.take_damage(damage)
 		queue_free()
 
-# 5. HIT A BODY (Walls, Players, Enemies)
 func _on_hit_body(body_we_hit):
-	# Friendly Fire Check: Ignore the shooter's physical body
-	if body_we_hit == shooter_node:
-		return
+	if body_we_hit == shooter_node: return
 
-	# If we hit a Player or Enemy (Layer 2)
 	if body_we_hit.has_method("take_damage"):
 		body_we_hit.take_damage(damage)
 	
-	# Destroy fireball on impact (hitting a Wall OR a Person)
 	queue_free()

@@ -8,7 +8,6 @@ func _ready():
 	var anim = $AnimatedSprite2D
 	
 	# 1. CONNECT SIGNALS
-	# Beams need to hit Players (Body) and Dummies (Area)
 	area_entered.connect(_on_hit)
 	body_entered.connect(_on_hit)
 	
@@ -19,24 +18,27 @@ func _ready():
 	await anim.animation_finished
 	queue_free()
 
-# --- SETUP FUNCTION ---
-# Call this immediately! Beams usually need to be ROTATED to face the target.
+# --- SETUP FUNCTION (UPDATED) ---
 func setup(who_fired_me, rotation_angle):
 	shooter_node = who_fired_me
 	rotation = rotation_angle # Point the beam where we aimed!
+	
+	# --- DAMAGE SCALING LOGIC ---
+	if shooter_node and shooter_node.has_method("get_damage_multiplier"):
+		# "SD" is the ID for Beam
+		var multiplier = shooter_node.get_damage_multiplier("SD")
+		damage = int(damage * multiplier)
 
 # --- COLLISION LOGIC ---
 func _on_hit(target):
 	# 1. FRIENDLY FIRE SAFETY
-	# If the beam spawns on top of the shooter, don't hurt them.
 	if target == shooter_node:
 		return
 
 	# 2. DAMAGE LOGIC
-	# The beam pierces! It hits this target and KEEPS GOING.
 	if target.has_method("take_damage"):
 		target.take_damage(damage)
+		
+	# 3. SILENCE LOGIC
 	if target.has_method("apply_silenced"):
 		target.apply_silenced(silenced_duration)
-		
-	# Note: We do NOT queue_free(). The beam stays until the animation ends.

@@ -3,6 +3,14 @@
 [ext_resource type="Script" uid="uid://fgey3aaxbmuu" path="res://spells/lightning.gd" id="1_888k8"]
 [ext_resource type="Texture2D" uid="uid://bxnbp2pinb83r" path="res://images/lightning3.png" id="1_cep6t"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_hp0ur"]
+atlas = ExtResource("1_cep6t")
+region = Rect2(458, 55, 89, 300)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f8xya"]
+atlas = ExtResource("1_cep6t")
+region = Rect2(369, 55, 89, 300)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_888k8"]
 atlas = ExtResource("1_cep6t")
 region = Rect2(13, 55, 89, 300)
@@ -19,17 +27,15 @@ region = Rect2(191, 55, 89, 300)
 atlas = ExtResource("1_cep6t")
 region = Rect2(280, 55, 89, 300)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_f8xya"]
-atlas = ExtResource("1_cep6t")
-region = Rect2(369, 55, 89, 300)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_hp0ur"]
-atlas = ExtResource("1_cep6t")
-region = Rect2(458, 55, 89, 300)
-
 [sub_resource type="SpriteFrames" id="SpriteFrames_xuhhs"]
 animations = [{
 "frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hp0ur")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f8xya")
+}, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_888k8")
 }, {
@@ -50,7 +56,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"default",
-"speed": 15.0
+"speed": 4.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cep6t"]
@@ -65,8 +71,9 @@ script = ExtResource("1_888k8")
 position = Vector2(-0.29999924, -83)
 scale = Vector2(0.6, 0.6)
 sprite_frames = SubResource("SpriteFrames_xuhhs")
-frame = 5
+frame = 7
 frame_progress = 1.0
+speed_scale = 3.5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1981741095]
 position = Vector2(0, -20)

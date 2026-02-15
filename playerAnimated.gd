@@ -1,11 +1,11 @@
 extends CharacterBody2D
 
 const SPEED = 101.0
-const CAST_TIME = 0.5 # Duration of the wind-up/telegraph
+const CAST_TIME = 0.5 
 
 var target_position = Vector2.ZERO
 var key_history = ""
-var is_casting = false # Tracks if we are currently winding up
+var is_casting = false 
 var is_silenced = false
 
 # --- HEALTH SETTINGS ---
@@ -14,31 +14,39 @@ var current_hp = 50
 
 # --- SPELL UNLOCKS ---
 var spells_unlocked = {
-	"23": false, # Fireball
-	"WE": false, # Lightning
-	"SD": false, # Beam
-	"XC": false  # Plant
+	"23": true, 
+	"WE": true, 
+	"SD": true, 
+	"XC": true, 
+	"2345": false # Meteor
 }
+
+# --- BOOK COLLECTION ---
+var book_counts = { "23": 0, "WE": 0, "SD": 0, "XC": 0 }
 
 # --- UI NODES ---
 @onready var hp_bar = $CanvasLayer/ProgressBar
-@onready var hp_label = $CanvasLayer/ProgressBar/HPLabel # Added reference to your new Label
+@onready var hp_label = $CanvasLayer/ProgressBar/HPLabel 
 @onready var status_label = $spell_status
 @onready var cast_bar = $CastBar 
-@onready var barrier = $Barrier # Ensure your Barrier scene is instanced here!
+@onready var barrier = $Barrier 
 var status_start_pos = Vector2.ZERO 
 
-# --- SPELL UI NODES (COOLDOWNS) ---
-@onready var overlay_fireball = $CanvasLayer/SpellBar/FireballBox/CooldownOverlay
-@onready var overlay_lightning = $CanvasLayer/SpellBar/LightningBox/CooldownOverlay
-@onready var overlay_beam = $CanvasLayer/SpellBar/BeamBox/CooldownOverlay
-@onready var overlay_plant = $CanvasLayer/SpellBar/PlantBox/CooldownOverlay
+# --- SPELL UI NODES (BOTTOM ROW) ---
+@onready var overlay_fireball = $CanvasLayer/SpellBar/BottomRow/FireballBox/CooldownOverlay
+@onready var overlay_lightning = $CanvasLayer/SpellBar/BottomRow/LightningBox/CooldownOverlay
+@onready var overlay_beam = $CanvasLayer/SpellBar/BottomRow/BeamBox/CooldownOverlay
+@onready var overlay_plant = $CanvasLayer/SpellBar/BottomRow/PlantBox/CooldownOverlay
 
-# --- SPELL UI NODES (LOCKS) ---
-@onready var lock_fireball = $CanvasLayer/SpellBar/FireballBox/LockIcon
-@onready var lock_lightning = $CanvasLayer/SpellBar/LightningBox/LockIcon
-@onready var lock_beam = $CanvasLayer/SpellBar/BeamBox/LockIcon
-@onready var lock_plant = $CanvasLayer/SpellBar/PlantBox/LockIcon
+# --- SPELL UI NODES (TOP ROW - ULTIMATES) ---
+@onready var lock_ult_fireball = $CanvasLayer/SpellBar/TopRow/FireballUltBox/LockIcon
+@onready var lock_ult_lightning = $CanvasLayer/SpellBar/TopRow/LightningUltBox/LockIcon
+@onready var lock_ult_beam = $CanvasLayer/SpellBar/TopRow/BeamUltBox/LockIcon
+@onready var lock_ult_plant = $CanvasLayer/SpellBar/TopRow/PlantUltBox/LockIcon
+
+# --- NEW: ULTIMATE COOLDOWN OVERLAY ---
+# Make sure you created this TextureProgressBar in your scene!
+@onready var overlay_ult_fireball = $CanvasLayer/SpellBar/TopRow/FireballUltBox/CooldownOverlay
 
 # --- CURSOR NODE ---
 @onready var aim_cursor = $AimCursor
@@ -48,14 +56,12 @@ const MAX_COOLDOWNS = {
 	"23": 1.0,  
 	"WE": 3.0,  
 	"SD": 5.0,  
-	"XC": 10.0  
+	"XC": 10.0,
+	"2345": 15.0 
 }
 
 var current_cooldowns = {
-	"23": 0.0,
-	"WE": 0.0,
-	"SD": 0.0,
-	"XC": 0.0
+	"23": 0.0, "WE": 0.0, "SD": 0.0, "XC": 0.0, "2345": 0.0
 }
 
 # --- ANIMATION NODE ---
@@ -70,15 +76,15 @@ var fireball_scene = preload("res://spells/fireball.tscn")
 var lightning_scene = preload("res://spells/Lightning.tscn")
 var beam_scene = preload("res://spells/beam.tscn")
 var plant_scene = preload("res://spells/plant.tscn")
+var meteor_scene = preload("res://spells/meteor.tscn") 
 
 func _ready():
 	target_position = position
 	anim.play("idle")
 	
 	hp_bar.max_value = max_hp
-	update_hp_ui() # Initialize the health numbers and bar
+	update_hp_ui() 
 	
-	# Setup Cast Bar
 	cast_bar.visible = false
 	cast_bar.max_value = CAST_TIME
 	cast_bar.value = 0
@@ -90,56 +96,88 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
 func _input(event):
-	# 1. MOVEMENT CLICK
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		target_position = get_global_mouse_position()
 
-	# 2. BARRIER TOGGLE (Right Click)
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
-		if event.pressed:
-			barrier.activate()
-		else:
-			barrier.deactivate()
+		if event.pressed: barrier.activate()
+		else: barrier.deactivate()
 
-	# Don't start a NEW spell combo if already winding one up
 	if is_casting: return
 
-	# 3. COMBO CHECKER
 	if event is InputEventKey and event.pressed and not event.echo:
 		var key_pressed = OS.get_keycode_string(event.keycode)
 		key_history += key_pressed
 		
-		if key_history.length() > 6: 
-			key_history = key_history.right(6)
+		if key_history.length() > 10: 
+			key_history = key_history.right(10)
 		
-		if key_history.ends_with("23"): start_windup("23", fireball_scene, "cast")
+		if key_history.ends_with("EPSTEIN"):
+			cast_spell(epstein_scene)
+			key_history = ""
+		elif key_history.ends_with("2345"): 
+			start_windup("2345", meteor_scene, "summon", CAST_TIME * 2.0)
+		elif key_history.ends_with("23"): start_windup("23", fireball_scene, "cast")
 		elif key_history.ends_with("WE"): start_windup("WE", lightning_scene, "summon")
 		elif key_history.ends_with("SD"): start_windup("SD", beam_scene, "beam")
 		elif key_history.ends_with("XC"): start_windup("XC", plant_scene, "behind")
-		elif key_history.ends_with("EPSTEIN"):
-			cast_spell(epstein_scene)
-			key_history = ""
 
-# --- WIND-UP SYSTEM (NON-BLOCKING MOVEMENT) ---
+# --- BOOK COLLECTION SYSTEM ---
 
-func start_windup(id, scene, type):
-	if spells_unlocked[id] and current_cooldowns[id] <= 0:
+func collect_book(book_name):
+	var spell_key = ""
+	match book_name:
+		"book_fireball": spell_key = "23"
+		"book_lightning": spell_key = "WE"
+		"book_beam": spell_key = "SD"
+		"book_tree": spell_key = "XC"
+	
+	if spell_key != "":
+		book_counts[spell_key] += 1
+		show_status_text("Power Up! (+10%)")
+		if book_counts[spell_key] >= 3:
+			unlock_ultimate_logic(spell_key)
+			show_status_text("ULTIMATE UNLOCKED!")
+
+func unlock_ultimate_logic(key):
+	match key:
+		"23": 
+			lock_ult_fireball.visible = false
+			spells_unlocked["2345"] = true
+		"WE": lock_ult_lightning.visible = false
+		"SD": lock_ult_beam.visible = false
+		"XC": lock_ult_plant.visible = false
+
+func get_damage_multiplier(spell_key):
+	if spell_key == "2345": return 1.0 
+	return 1.0 + (book_counts[spell_key] * 0.1)
+
+# --- WIND-UP SYSTEM ---
+
+func start_windup(id, scene, type, time_override = CAST_TIME):
+	if spells_unlocked.get(id, false) and current_cooldowns.get(id, 0.0) <= 0 and not is_silenced:
 		is_casting = true
 		key_history = ""
 		
-		# Visuals
 		cast_bar.value = 0
 		cast_bar.visible = true
+		cast_bar.max_value = time_override 
 		
 		var tween = create_tween()
-		tween.tween_property(cast_bar, "value", CAST_TIME, CAST_TIME)
+		tween.tween_property(cast_bar, "value", time_override, time_override)
 		tween.finished.connect(func(): _release_spell(id, scene, type))
-	elif not spells_unlocked[id]:
-		show_status_text("Locked!")
-	else:
-		show_status_text("Cooldown!")
+		
+	elif is_silenced: show_status_text("Silenced!") 
+	elif not spells_unlocked.get(id, false): show_status_text("Locked!")
+	else: show_status_text("Cooldown!")
 
 func _release_spell(id, scene, type):
+	if is_silenced:
+		is_casting = false
+		cast_bar.visible = false
+		show_status_text("Silenced!")
+		return
+
 	is_casting = false
 	cast_bar.visible = false
 	
@@ -151,20 +189,17 @@ func _release_spell(id, scene, type):
 	
 	start_cooldown(id)
 
-# --- PHYSICS & MOVEMENT ---
+# --- PHYSICS ---
 
 func _physics_process(delta):
 	process_cooldowns(delta)
-
 	var is_moving = false
 	
 	if position.distance_to(target_position) > 5:
 		velocity = position.direction_to(target_position) * SPEED
 		move_and_slide()
 		is_moving = true
-		
-		if not is_attacking(): 
-			anim.flip_h = velocity.x < 0
+		if not is_attacking(): anim.flip_h = velocity.x < 0
 	else:
 		velocity = Vector2.ZERO
 		is_moving = false
@@ -174,28 +209,26 @@ func _physics_process(delta):
 	if aim_cursor:
 		aim_cursor.global_position = get_global_mouse_position()
 
-	if is_moving:
-		anim.play("run")
-	else:
-		anim.play("idle")
+	if is_moving: anim.play("run")
+	else: anim.play("idle")
 
-# --- UI & FEEDBACK ---
+# --- UI LOGIC ---
 
 func _reset_ui():
 	update_overlay("23", 0)
 	update_overlay("WE", 0)
 	update_overlay("SD", 0)
 	update_overlay("XC", 0)
-	lock_fireball.visible = true
-	lock_lightning.visible = true
-	lock_beam.visible = true
-	lock_plant.visible = true
+	update_overlay("2345", 0) # Reset meteor too
+	
+	lock_ult_fireball.visible = true
+	lock_ult_lightning.visible = true
+	lock_ult_beam.visible = true
+	lock_ult_plant.visible = true
 
 func update_hp_ui():
 	hp_bar.value = current_hp
-	# round() ensures 42.8 becomes 43, then int() removes the .0
-	var display_hp = int(round(current_hp))
-	hp_label.text = str(display_hp) + " / " + str(max_hp)
+	hp_label.text = str(int(round(current_hp))) + " / " + str(max_hp)
 
 func show_status_text(text_content):
 	status_label.text = text_content
@@ -208,8 +241,9 @@ func show_status_text(text_content):
 	tween.tween_callback(status_label.hide)
 
 func start_cooldown(combo_key):
-	current_cooldowns[combo_key] = MAX_COOLDOWNS[combo_key]
-	update_overlay(combo_key, 100)
+	if combo_key in MAX_COOLDOWNS:
+		current_cooldowns[combo_key] = MAX_COOLDOWNS[combo_key]
+		update_overlay(combo_key, 100)
 
 func process_cooldowns(delta):
 	for key in current_cooldowns:
@@ -228,40 +262,31 @@ func update_overlay(key, percentage):
 		"WE": target_overlay = overlay_lightning
 		"SD": target_overlay = overlay_beam
 		"XC": target_overlay = overlay_plant 
+		"2345": target_overlay = overlay_ult_fireball # <--- NEW LINK
+	
 	if target_overlay: target_overlay.value = percentage
 
 func unlock_spell(code_name):
 	if code_name in spells_unlocked:
 		spells_unlocked[code_name] = true
 		show_status_text("Unlocked!")
-		match code_name:
-			"23": lock_fireball.visible = false
-			"WE": lock_lightning.visible = false
-			"SD": lock_beam.visible = false
-			"XC": lock_plant.visible = false
 
-# --- HEALTH & BARRIER LOGIC ---
+# --- HEALTH & COMBAT ---
 
 func take_damage(amount):
-	# Check the barrier's current state
 	var shield_status = barrier.get_shield_status()
-	
 	if shield_status == "PARRY":
 		show_status_text("Parried!")
-		return # Negate all damage
-		
-	if shield_status == "BLOCK":
-		amount *= 0.8 # 20% reduction (take 80% damage)
+		return 
+	if shield_status == "BLOCK": amount *= 0.8 
 	
-	# Normal damage logic continues
 	if is_casting:
 		is_casting = false
 		cast_bar.visible = false
 		show_status_text("Interrupted!")
 
 	current_hp -= amount
-	update_hp_ui() # This handles the bar and the text label
-	
+	update_hp_ui() 
 	anim.play("hurt")
 	modulate = Color.RED
 	create_tween().tween_property(self, "modulate", Color.WHITE, 0.1)
@@ -269,15 +294,11 @@ func take_damage(amount):
 
 func heal(amount):
 	current_hp = min(current_hp + amount, max_hp)
-	update_hp_ui() # This handles the bar and the text label
-	
+	update_hp_ui() 
 	modulate = Color.GREEN
 	create_tween().tween_property(self, "modulate", Color.WHITE, 0.3)
 
-func die():
-	get_tree().reload_current_scene()
-
-# --- HELPERS ---
+func die(): get_tree().reload_current_scene()
 
 func is_hurting() -> bool: return anim.animation == "hurt" and anim.is_playing()
 func is_attacking() -> bool: return (anim.animation == "attack1" or anim.animation == "attack2") and anim.is_playing()
@@ -323,16 +344,10 @@ func cast_behind(spell_to_cast):
 
 func apply_silenced(silenced_duration):
 	is_silenced = true
+	show_status_text("Silenced!") 
 	silenced_timer.wait_time = silenced_duration
 	silenced_timer.start()
-	lock_fireball.visible = true
-	lock_lightning.visible = true
-	lock_beam.visible = true
-	lock_plant.visible = true
 
 func _on_silenced_timer_timeout() -> void:
 	is_silenced = false
-	lock_fireball.visible = not spells_unlocked["23"]
-	lock_lightning.visible = not spells_unlocked["WE"]
-	lock_beam.visible = not spells_unlocked["SD"]
-	lock_plant.visible = not spells_unlocked["XC"]
+	show_status_text("Silence faded")

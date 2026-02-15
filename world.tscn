@@ -5937,13 +5937,22 @@ tile_set = SubResource("TileSet_tlwt5")
 [node name="CharacterBody2D" parent="." unique_id=262399486 instance=ExtResource("3_aqk2v")]
 
 [node name="BookFireball" parent="." unique_id=1198535969 instance=ExtResource("3_tlwt5")]
-position = Vector2(92, 6)
+position = Vector2(127, -39)
+
+[node name="BookFireball2" parent="." unique_id=2001461244 instance=ExtResource("3_tlwt5")]
+position = Vector2(151, -19)
+
+[node name="BookFireball3" parent="." unique_id=791692777 instance=ExtResource("3_tlwt5")]
+position = Vector2(138, 13)
+
+[node name="BookFireball4" parent="." unique_id=1295713646 instance=ExtResource("3_tlwt5")]
+position = Vector2(102, 34)
 
 [node name="BookLightning" parent="." unique_id=1123432822 instance=ExtResource("4_aqk2v")]
-position = Vector2(90, -34)
+position = Vector2(-96, -25)
 
 [node name="BookBeam" parent="." unique_id=316556422 instance=ExtResource("5_dwbse")]
-position = Vector2(-81, -33)
+position = Vector2(-105, 11)
 
 [node name="BookPlant" parent="." unique_id=1370339200 instance=ExtResource("6_pkg7o")]
 position = Vector2(-74, 32)
