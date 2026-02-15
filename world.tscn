@@ -5962,6 +5962,15 @@ position = Vector2(-97, -15)
 position = Vector2(-70, 16)
 
 [node name="BookBeam" parent="." unique_id=316556422 instance=ExtResource("5_dwbse")]
+position = Vector2(40, -212)
+
+[node name="BookBeam2" parent="." unique_id=853099642 instance=ExtResource("5_dwbse")]
+position = Vector2(79, -195)
+
+[node name="BookBeam3" parent="." unique_id=227463912 instance=ExtResource("5_dwbse")]
+position = Vector2(-14, -168)
+
+[node name="BookBeam4" parent="." unique_id=658919964 instance=ExtResource("5_dwbse")]
 position = Vector2(19, -188)
 
 [node name="BookPlant" parent="." unique_id=1370339200 instance=ExtResource("6_pkg7o")]
@@ -5982,4 +5991,4 @@ position = Vector2(110, 109)
 [node name="Barrier" parent="." unique_id=1522064716 instance=ExtResource("8_gbfbk")]
 
 [node name="Minion" parent="." unique_id=386353379 instance=ExtResource("9_ioo17")]
-position = Vector2(-97, 69)
+position = Vector2(-243, -137)

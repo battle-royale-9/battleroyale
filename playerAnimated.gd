@@ -21,7 +21,8 @@ var spells_unlocked = {
 	"XC": true, 
 	"2345": false, # Meteor (Fireball Ult)
 	"WERT": false, # Tornado (Lightning Ult)
-	"XCVB": false  # Poison (Plant Ult)
+	"XCVB": false,  # Poison (Plant Ult)
+	"SDFG": false # Global Silence
 }
 
 # --- BOOK COLLECTION ---
@@ -51,7 +52,7 @@ var status_start_pos = Vector2.ZERO
 @onready var overlay_ult_fireball = $CanvasLayer/SpellBar/TopRow/FireballUltBox/CooldownOverlay
 @onready var overlay_ult_lightning = $CanvasLayer/SpellBar/TopRow/LightningUltBox/CooldownOverlay 
 @onready var overlay_ult_plant = $CanvasLayer/SpellBar/TopRow/PlantUltBox/CooldownOverlay
-
+@onready var overlay_ult_silence = $CanvasLayer/SpellBar/TopRow/BeamUltBox/CooldownOverlay
 # --- CURSOR NODE ---
 @onready var aim_cursor = $AimCursor
 
@@ -63,12 +64,13 @@ const MAX_COOLDOWNS = {
 	"XC": 10.0,
 	"2345": 15.0,
 	"WERT": 15.0,
-	"XCVB": 15.0
+	"XCVB": 15.0,
+	"SDFG": 15.0
 }
 
 var current_cooldowns = {
 	"23": 0.0, "WE": 0.0, "SD": 0.0, "XC": 0.0, 
-	"2345": 0.0, "WERT": 0.0, "XCVB": 0.0
+	"2345": 0.0, "WERT": 0.0, "XCVB": 0.0, "SDFG": 0.0,
 }
 
 # --- ANIMATION NODE ---
@@ -86,6 +88,7 @@ var plant_scene = preload("res://spells/plant.tscn")
 var meteor_scene = preload("res://spells/meteor.tscn") 
 var tornado_scene = preload("res://spells/tornado.tscn")
 var poison_scene = preload("res://spells/poison.tscn")
+var global_silence_scene = preload("res://spells/sphere_silenced.tscn")
 
 func _ready():
 	target_position = position
@@ -137,6 +140,8 @@ func _input(event):
 			start_windup("WERT", tornado_scene, "summon", CAST_TIME * 2.0)
 		elif key_history.ends_with("XCVB"): 
 			start_windup("XCVB", poison_scene, "center", CAST_TIME * 2.0)
+		elif key_history.ends_with("SDFG"): 
+			start_windup("SDFG", global_silence_scene, "center", CAST_TIME * 2.0)
 			
 		# BASIC SPELLS
 		elif key_history.ends_with("23"): start_windup("23", fireball_scene, "cast")
@@ -169,7 +174,9 @@ func unlock_ultimate_logic(key):
 		"WE": 
 			lock_ult_lightning.visible = false
 			spells_unlocked["WERT"] = true 
-		"SD": lock_ult_beam.visible = false
+		"SD": 
+			lock_ult_beam.visible = false
+			spells_unlocked["SDFG"] = true
 		"XC": 
 			lock_ult_plant.visible = false
 			spells_unlocked["XCVB"] = true 
@@ -178,6 +185,7 @@ func get_damage_multiplier(spell_key):
 	if spell_key == "2345": return 1.0 
 	if spell_key == "WERT": return 1.0
 	if spell_key == "XCVB": return 1.0 
+	if spell_key == "SDFG": return 1.0
 	return 1.0 + (book_counts[spell_key] * 0.1)
 
 # --- WIND-UP SYSTEM ---
@@ -251,6 +259,7 @@ func _reset_ui():
 	update_overlay("2345", 0) 
 	update_overlay("WERT", 0) 
 	update_overlay("XCVB", 0) 
+	update_overlay("SDFG", 0) 
 	
 	lock_ult_fireball.visible = true
 	lock_ult_lightning.visible = true
@@ -296,6 +305,7 @@ func update_overlay(key, percentage):
 		"2345": target_overlay = overlay_ult_fireball 
 		"WERT": target_overlay = overlay_ult_lightning 
 		"XCVB": target_overlay = overlay_ult_plant 
+		"SDFG": target_overlay = overlay_ult_silence
 	
 	if target_overlay: target_overlay.value = percentage
 

@@ -3,7 +3,7 @@ extends CharacterBody2D
 const SPEED = 50.0
 const CHASE_SPEED = 75.0
 const WANDER_RADIUS = 200.0
-const AGGRO_RADIUS = 300.0
+const AGGRO_RADIUS = 100.0
 const ATTACK_RANGE = 40.0
 const DAMAGE = 15
 const HEALTH = 30

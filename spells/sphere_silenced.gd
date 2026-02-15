@@ -13,14 +13,19 @@ func _ready():
 	await get_tree().create_timer(1.0).timeout
 	queue_free()
 	
-func setup(who_fired_me, rotation_angle):
-	shooter_node = who_fired_me
-	
+func setup(caster):
+	shooter_node = caster
+
 	if shooter_node and shooter_node.has_method("get_damage_multiplier"):
-		var multiplier = shooter_node.get_damage_multiplier("SD")
+		var multiplier = shooter_node.get_damage_multiplier("SDFG")
 		damage = int(damage * multiplier)
 
+
+
 func _on_body_entered(body: Node2D) -> void:
+	if body == shooter_node:
+		return
+	
 	if body.has_method("take_damage"):
 		body.take_damage(damage)
 		
