@@ -1,7 +1,6 @@
 extends CharacterBody2D
 
 # --- MOVEMENT SETTINGS ---
-# CHANGED: 'const' to 'var' so Poison can slow us down!
 var speed = 101.0 
 const CAST_TIME = 0.5 
 
@@ -22,7 +21,7 @@ var spells_unlocked = {
 	"XC": true, 
 	"2345": false, # Meteor (Fireball Ult)
 	"WERT": false, # Tornado (Lightning Ult)
-	"XCVB": false  # Poison (Plant Ult) <--- NEW
+	"XCVB": false  # Poison (Plant Ult)
 }
 
 # --- BOOK COLLECTION ---
@@ -51,7 +50,6 @@ var status_start_pos = Vector2.ZERO
 # --- ULTIMATE COOLDOWN OVERLAYS ---
 @onready var overlay_ult_fireball = $CanvasLayer/SpellBar/TopRow/FireballUltBox/CooldownOverlay
 @onready var overlay_ult_lightning = $CanvasLayer/SpellBar/TopRow/LightningUltBox/CooldownOverlay 
-# NEW: Make sure this node exists!
 @onready var overlay_ult_plant = $CanvasLayer/SpellBar/TopRow/PlantUltBox/CooldownOverlay
 
 # --- CURSOR NODE ---
@@ -65,7 +63,7 @@ const MAX_COOLDOWNS = {
 	"XC": 10.0,
 	"2345": 15.0,
 	"WERT": 15.0,
-	"XCVB": 15.0 # <--- NEW
+	"XCVB": 15.0
 }
 
 var current_cooldowns = {
@@ -87,11 +85,15 @@ var beam_scene = preload("res://spells/beam.tscn")
 var plant_scene = preload("res://spells/plant.tscn")
 var meteor_scene = preload("res://spells/meteor.tscn") 
 var tornado_scene = preload("res://spells/tornado.tscn")
-var poison_scene = preload("res://spells/poison.tscn") # <--- NEW
+var poison_scene = preload("res://spells/poison.tscn")
 
 func _ready():
 	target_position = position
 	anim.play("idle")
+	
+	# --- FIX START: MAKE TIMER RUN ONLY ONCE ---
+	silenced_timer.one_shot = true
+	# --- FIX END ---
 	
 	hp_bar.max_value = max_hp
 	update_hp_ui() 
@@ -133,7 +135,7 @@ func _input(event):
 			start_windup("2345", meteor_scene, "summon", CAST_TIME * 2.0)
 		elif key_history.ends_with("WERT"): 
 			start_windup("WERT", tornado_scene, "summon", CAST_TIME * 2.0)
-		elif key_history.ends_with("XCVB"): # <--- NEW POISON CAST
+		elif key_history.ends_with("XCVB"): 
 			start_windup("XCVB", poison_scene, "center", CAST_TIME * 2.0)
 			
 		# BASIC SPELLS
@@ -170,12 +172,12 @@ func unlock_ultimate_logic(key):
 		"SD": lock_ult_beam.visible = false
 		"XC": 
 			lock_ult_plant.visible = false
-			spells_unlocked["XCVB"] = true # <--- UNLOCK POISON
+			spells_unlocked["XCVB"] = true 
 
 func get_damage_multiplier(spell_key):
 	if spell_key == "2345": return 1.0 
 	if spell_key == "WERT": return 1.0
-	if spell_key == "XCVB": return 1.0 # <--- NEW
+	if spell_key == "XCVB": return 1.0 
 	return 1.0 + (book_counts[spell_key] * 0.1)
 
 # --- WIND-UP SYSTEM ---
@@ -212,7 +214,7 @@ func _release_spell(id, scene, type):
 		"summon": summon_spell(scene)
 		"beam": cast_beam(scene)
 		"behind": cast_behind(scene)
-		"center": cast_center(scene) # <--- NEW TYPE
+		"center": cast_center(scene) 
 	
 	start_cooldown(id)
 
@@ -223,7 +225,6 @@ func _physics_process(delta):
 	var is_moving = false
 	
 	if position.distance_to(target_position) > 5:
-		# MOVEMENT FIX: Uses 'speed' variable now
 		velocity = position.direction_to(target_position) * speed
 		move_and_slide()
 		is_moving = true
@@ -249,7 +250,7 @@ func _reset_ui():
 	update_overlay("XC", 0)
 	update_overlay("2345", 0) 
 	update_overlay("WERT", 0) 
-	update_overlay("XCVB", 0) # <--- NEW
+	update_overlay("XCVB", 0) 
 	
 	lock_ult_fireball.visible = true
 	lock_ult_lightning.visible = true
@@ -294,7 +295,7 @@ func update_overlay(key, percentage):
 		"XC": target_overlay = overlay_plant 
 		"2345": target_overlay = overlay_ult_fireball 
 		"WERT": target_overlay = overlay_ult_lightning 
-		"XCVB": target_overlay = overlay_ult_plant # <--- LINKED HERE
+		"XCVB": target_overlay = overlay_ult_plant 
 	
 	if target_overlay: target_overlay.value = percentage
 
@@ -372,14 +373,11 @@ func cast_behind(spell_to_cast):
 	spell.global_position = global_position 
 	if spell.has_method("setup"): spell.setup(self)
 
-# NEW: Spawns directly on top of the player
 func cast_center(spell_to_cast):
-	# No attack animation? Or maybe a 'power up' pose? 
-	# Using attack for now to keep it simple.
 	play_attack_anim()
 	var spell = spell_to_cast.instantiate()
 	get_parent().add_child(spell)
-	spell.global_position = global_position # Center on player
+	spell.global_position = global_position 
 	if spell.has_method("setup"): spell.setup(self)
 
 # --- SILENCE ---

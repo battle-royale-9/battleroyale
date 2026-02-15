@@ -288,17 +288,17 @@ bg_color = Color(0.9999704, 0.10738065, 0.2793229, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_weflv"]
 outline_color = Color(0.0142752165, 0.014275218, 0.014275218, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_dnqdc"]
+[sub_resource type="LabelSettings" id="LabelSettings_5wdo2"]
 font_size = 12
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_dnqdc"]
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_weflv"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_cxm84"]
+[sub_resource type="LabelSettings" id="LabelSettings_1qhei"]
 font_size = 11
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_cxm84"]
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_mhwia"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_omh87"]
+[sub_resource type="LabelSettings" id="LabelSettings_p8t1n"]
 font_size = 12
 
 [sub_resource type="LabelSettings" id="LabelSettings_l7a1p"]
@@ -367,36 +367,41 @@ label_settings = SubResource("LabelSettings_weflv")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SpellBar" type="HBoxContainer" parent="CanvasLayer" unique_id=591568636]
+[node name="SpellBar" type="VBoxContainer" parent="CanvasLayer" unique_id=147038413]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -20.0
-offset_top = -71.0
-offset_right = 20.0
-offset_bottom = -31.0
+offset_left = -120.0
+offset_top = -135.0
+offset_right = 120.0
+offset_bottom = -11.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_constants/separation = 5
 
-[node name="FireballBox" type="Panel" parent="CanvasLayer/SpellBar" unique_id=628056113]
+[node name="TopRow" type="HBoxContainer" parent="CanvasLayer/SpellBar" unique_id=887717907]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="FireballUltBox" type="Panel" parent="CanvasLayer/SpellBar/TopRow" unique_id=2146614608]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/SpellBar/FireballBox" unique_id=1538487610]
+[node name="Label" type="Label" parent="CanvasLayer/SpellBar/TopRow/FireballUltBox" unique_id=1382699167]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Fireball"
-label_settings = SubResource("LabelSettings_dnqdc")
+text = "Meteor"
+label_settings = SubResource("LabelSettings_5wdo2")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/FireballBox" unique_id=1492629913]
+[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/TopRow/FireballUltBox" unique_id=1506583866]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -405,10 +410,10 @@ grow_horizontal = 2
 grow_vertical = 2
 fill_mode = 3
 nine_patch_stretch = true
-texture_progress = SubResource("PlaceholderTexture2D_dnqdc")
+texture_progress = SubResource("PlaceholderTexture2D_weflv")
 tint_progress = Color(0, 0, 0, 0.5882353)
 
-[node name="LockIcon" type="TextureRect" parent="CanvasLayer/SpellBar/FireballBox" unique_id=1345587714]
+[node name="LockIcon" type="TextureRect" parent="CanvasLayer/SpellBar/TopRow/FireballUltBox" unique_id=1729190587]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -416,23 +421,23 @@ scale = Vector2(0.215, 0.215)
 pivot_offset = Vector2(2.5, 0)
 texture = ExtResource("7_p8t1n")
 
-[node name="LightningBox" type="Panel" parent="CanvasLayer/SpellBar" unique_id=2053766778]
+[node name="LightningUltBox" type="Panel" parent="CanvasLayer/SpellBar/TopRow" unique_id=2074123192]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/SpellBar/LightningBox" unique_id=1971073085]
+[node name="Label" type="Label" parent="CanvasLayer/SpellBar/TopRow/LightningUltBox" unique_id=1706334681]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Lightning"
-label_settings = SubResource("LabelSettings_cxm84")
+text = "Tornado"
+label_settings = SubResource("LabelSettings_1qhei")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/LightningBox" unique_id=95310503]
+[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/TopRow/LightningUltBox" unique_id=1365566174]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -443,10 +448,10 @@ grow_horizontal = 2
 grow_vertical = 2
 fill_mode = 3
 nine_patch_stretch = true
-texture_progress = SubResource("PlaceholderTexture2D_cxm84")
+texture_progress = SubResource("PlaceholderTexture2D_mhwia")
 tint_progress = Color(0, 0, 0, 0.5882353)
 
-[node name="LockIcon" type="TextureRect" parent="CanvasLayer/SpellBar/LightningBox" unique_id=587427780]
+[node name="LockIcon" type="TextureRect" parent="CanvasLayer/SpellBar/TopRow/LightningUltBox" unique_id=988638935]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -454,11 +459,11 @@ scale = Vector2(0.215, 0.215)
 pivot_offset = Vector2(2.5, 0)
 texture = ExtResource("7_p8t1n")
 
-[node name="BeamBox" type="Panel" parent="CanvasLayer/SpellBar" unique_id=453337856]
+[node name="BeamUltBox" type="Panel" parent="CanvasLayer/SpellBar/TopRow" unique_id=1094186418]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/SpellBar/BeamBox" unique_id=150197548]
+[node name="Label" type="Label" parent="CanvasLayer/SpellBar/TopRow/BeamUltBox" unique_id=1150948034]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -466,11 +471,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Beam"
-label_settings = SubResource("LabelSettings_omh87")
+label_settings = SubResource("LabelSettings_p8t1n")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/BeamBox" unique_id=1037032359]
+[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/TopRow/BeamUltBox" unique_id=922705988]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -479,10 +484,10 @@ grow_horizontal = 2
 grow_vertical = 2
 fill_mode = 3
 nine_patch_stretch = true
-texture_progress = SubResource("PlaceholderTexture2D_dnqdc")
+texture_progress = SubResource("PlaceholderTexture2D_weflv")
 tint_progress = Color(0, 0, 0, 0.5882353)
 
-[node name="LockIcon" type="TextureRect" parent="CanvasLayer/SpellBar/BeamBox" unique_id=427385361]
+[node name="LockIcon" type="TextureRect" parent="CanvasLayer/SpellBar/TopRow/BeamUltBox" unique_id=1143339069]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -490,11 +495,137 @@ scale = Vector2(0.215, 0.215)
 pivot_offset = Vector2(2.5, 0)
 texture = ExtResource("7_p8t1n")
 
-[node name="PlantBox" type="Panel" parent="CanvasLayer/SpellBar" unique_id=2001321742]
+[node name="PlantUltBox" type="Panel" parent="CanvasLayer/SpellBar/TopRow" unique_id=548730485]
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/SpellBar/PlantBox" unique_id=563294415]
+[node name="Label" type="Label" parent="CanvasLayer/SpellBar/TopRow/PlantUltBox" unique_id=437128975]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Poison"
+label_settings = SubResource("LabelSettings_p8t1n")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/TopRow/PlantUltBox" unique_id=216639592]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+fill_mode = 3
+nine_patch_stretch = true
+texture_progress = SubResource("PlaceholderTexture2D_weflv")
+tint_progress = Color(0, 0, 0, 0.5882353)
+
+[node name="LockIcon" type="TextureRect" parent="CanvasLayer/SpellBar/TopRow/PlantUltBox" unique_id=667727066]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(0.215, 0.215)
+pivot_offset = Vector2(2.5, 0)
+texture = ExtResource("7_p8t1n")
+
+[node name="BottomRow" type="HBoxContainer" parent="CanvasLayer/SpellBar" unique_id=304858124]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="FireballBox" type="Panel" parent="CanvasLayer/SpellBar/BottomRow" unique_id=598175868]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/SpellBar/BottomRow/FireballBox" unique_id=1996946931]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Fireball"
+label_settings = SubResource("LabelSettings_5wdo2")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/BottomRow/FireballBox" unique_id=570627074]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+fill_mode = 3
+nine_patch_stretch = true
+texture_progress = SubResource("PlaceholderTexture2D_weflv")
+tint_progress = Color(0, 0, 0, 0.5882353)
+
+[node name="LightningBox" type="Panel" parent="CanvasLayer/SpellBar/BottomRow" unique_id=1238037829]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/SpellBar/BottomRow/LightningBox" unique_id=500798950]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Lightning"
+label_settings = SubResource("LabelSettings_1qhei")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/BottomRow/LightningBox" unique_id=727066941]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_right = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+fill_mode = 3
+nine_patch_stretch = true
+texture_progress = SubResource("PlaceholderTexture2D_mhwia")
+tint_progress = Color(0, 0, 0, 0.5882353)
+
+[node name="BeamBox" type="Panel" parent="CanvasLayer/SpellBar/BottomRow" unique_id=250873771]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/SpellBar/BottomRow/BeamBox" unique_id=257913108]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Beam"
+label_settings = SubResource("LabelSettings_p8t1n")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/BottomRow/BeamBox" unique_id=1547865666]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+fill_mode = 3
+nine_patch_stretch = true
+texture_progress = SubResource("PlaceholderTexture2D_weflv")
+tint_progress = Color(0, 0, 0, 0.5882353)
+
+[node name="PlantBox" type="Panel" parent="CanvasLayer/SpellBar/BottomRow" unique_id=1705199673]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/SpellBar/BottomRow/PlantBox" unique_id=2121404554]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -502,11 +633,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Plant"
-label_settings = SubResource("LabelSettings_omh87")
+label_settings = SubResource("LabelSettings_p8t1n")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/PlantBox" unique_id=276377288]
+[node name="CooldownOverlay" type="TextureProgressBar" parent="CanvasLayer/SpellBar/BottomRow/PlantBox" unique_id=1505146968]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -515,16 +646,8 @@ grow_horizontal = 2
 grow_vertical = 2
 fill_mode = 3
 nine_patch_stretch = true
-texture_progress = SubResource("PlaceholderTexture2D_dnqdc")
+texture_progress = SubResource("PlaceholderTexture2D_weflv")
 tint_progress = Color(0, 0, 0, 0.5882353)
-
-[node name="LockIcon" type="TextureRect" parent="CanvasLayer/SpellBar/PlantBox" unique_id=110577226]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-scale = Vector2(0.215, 0.215)
-pivot_offset = Vector2(2.5, 0)
-texture = ExtResource("7_p8t1n")
 
 [node name="spell_status" type="Label" parent="." unique_id=1914322485]
 texture_filter = 2
