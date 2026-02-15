@@ -1,0 +1,83 @@
+[gd_scene format=3 uid="uid://beoghakkc2pgx"]
+
+[ext_resource type="Script" uid="uid://b6orwgrmgagnq" path="res://spells/sphere_silenced.gd" id="1_23v13"]
+[ext_resource type="Texture2D" uid="uid://d11k4mywcj5lp" path="res://images/spells/SilencedSphere/Water Ball_Frame_01.png" id="2_rjxg8"]
+[ext_resource type="Texture2D" uid="uid://ocrtd66ccqgr" path="res://images/spells/SilencedSphere/Water Ball_Frame_02.png" id="3_8qehp"]
+[ext_resource type="Texture2D" uid="uid://bi6wb54w4rcr5" path="res://images/spells/SilencedSphere/Water Ball_Frame_03.png" id="4_tp2pl"]
+[ext_resource type="Texture2D" uid="uid://cmr4jooqyw2ye" path="res://images/spells/SilencedSphere/Water Ball_Frame_04.png" id="5_etgor"]
+[ext_resource type="Texture2D" uid="uid://cff023pvynljj" path="res://images/spells/SilencedSphere/Water Ball_Frame_05.png" id="6_0cc7c"]
+[ext_resource type="Texture2D" uid="uid://dckq3l8kwu6at" path="res://images/spells/SilencedSphere/Water Ball_Frame_06.png" id="7_qmdxp"]
+[ext_resource type="Texture2D" uid="uid://dbkail0ei3agh" path="res://images/spells/SilencedSphere/Water Ball_Frame_07.png" id="8_uyjjr"]
+[ext_resource type="Texture2D" uid="uid://ca0yn0dl32hpu" path="res://images/spells/SilencedSphere/Water Ball_Frame_08.png" id="9_waj5j"]
+[ext_resource type="Texture2D" uid="uid://dawyiqng7xrwo" path="res://images/spells/SilencedSphere/Water Ball_Frame_09.png" id="10_ftaf2"]
+[ext_resource type="Texture2D" uid="uid://b7nkkimuyo0jj" path="res://images/spells/SilencedSphere/Water Ball_Frame_10.png" id="11_ibme3"]
+[ext_resource type="Texture2D" uid="uid://qn8bi2fmtarh" path="res://images/spells/SilencedSphere/Water Ball_Frame_11.png" id="12_pn8nh"]
+[ext_resource type="Texture2D" uid="uid://byrrxxln76tlc" path="res://images/spells/SilencedSphere/Water Ball_Frame_12.png" id="13_qrjo5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_23v13"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nscup"]
+atlas = ExtResource("2_rjxg8")
+region = Rect2(0, 0, 640, 640)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_a3wae"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nscup")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_8qehp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_tp2pl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_etgor")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_0cc7c")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_qmdxp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_uyjjr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_waj5j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_ftaf2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_ibme3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_pn8nh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_qrjo5")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[node name="SphereSilenced" type="Area2D" unique_id=1998675519]
+collision_layer = 4
+collision_mask = 11
+script = ExtResource("1_23v13")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=479619846]
+scale = Vector2(10.424737, 10.162514)
+shape = SubResource("CircleShape2D_23v13")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=200042367]
+modulate = Color(1, 1, 1, 0.49411765)
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_a3wae")
+frame = 6
+frame_progress = 0.9529077
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
