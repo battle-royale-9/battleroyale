@@ -95,4 +95,5 @@ joy_barrier={
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
