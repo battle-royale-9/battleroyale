@@ -5949,13 +5949,31 @@ position = Vector2(138, 13)
 position = Vector2(102, 34)
 
 [node name="BookLightning" parent="." unique_id=1123432822 instance=ExtResource("4_aqk2v")]
-position = Vector2(-96, -25)
+position = Vector2(-47, -26)
+
+[node name="BookLightning2" parent="." unique_id=1247415232 instance=ExtResource("4_aqk2v")]
+position = Vector2(-68, -45)
+
+[node name="BookLightning3" parent="." unique_id=1075805179 instance=ExtResource("4_aqk2v")]
+position = Vector2(-97, -15)
+
+[node name="BookLightning4" parent="." unique_id=163293788 instance=ExtResource("4_aqk2v")]
+position = Vector2(-70, 16)
 
 [node name="BookBeam" parent="." unique_id=316556422 instance=ExtResource("5_dwbse")]
-position = Vector2(-105, 11)
+position = Vector2(19, -188)
 
 [node name="BookPlant" parent="." unique_id=1370339200 instance=ExtResource("6_pkg7o")]
-position = Vector2(-74, 32)
+position = Vector2(4, -55)
+
+[node name="BookPlant2" parent="." unique_id=1929866604 instance=ExtResource("6_pkg7o")]
+position = Vector2(32, -47)
+
+[node name="BookPlant3" parent="." unique_id=1277488383 instance=ExtResource("6_pkg7o")]
+position = Vector2(54, -32)
+
+[node name="BookPlant4" parent="." unique_id=1471592748 instance=ExtResource("6_pkg7o")]
+position = Vector2(55, -4)
 
 [node name="Dummy" parent="." unique_id=1681343172 instance=ExtResource("7_pkg7o")]
 position = Vector2(110, 109)

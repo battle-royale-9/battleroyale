@@ -1,6 +1,8 @@
 extends CharacterBody2D
 
-const SPEED = 101.0
+# --- MOVEMENT SETTINGS ---
+# CHANGED: 'const' to 'var' so Poison can slow us down!
+var speed = 101.0 
 const CAST_TIME = 0.5 
 
 var target_position = Vector2.ZERO
@@ -18,7 +20,9 @@ var spells_unlocked = {
 	"WE": true, 
 	"SD": true, 
 	"XC": true, 
-	"2345": false # Meteor
+	"2345": false, # Meteor (Fireball Ult)
+	"WERT": false, # Tornado (Lightning Ult)
+	"XCVB": false  # Poison (Plant Ult) <--- NEW
 }
 
 # --- BOOK COLLECTION ---
@@ -44,9 +48,11 @@ var status_start_pos = Vector2.ZERO
 @onready var lock_ult_beam = $CanvasLayer/SpellBar/TopRow/BeamUltBox/LockIcon
 @onready var lock_ult_plant = $CanvasLayer/SpellBar/TopRow/PlantUltBox/LockIcon
 
-# --- NEW: ULTIMATE COOLDOWN OVERLAY ---
-# Make sure you created this TextureProgressBar in your scene!
+# --- ULTIMATE COOLDOWN OVERLAYS ---
 @onready var overlay_ult_fireball = $CanvasLayer/SpellBar/TopRow/FireballUltBox/CooldownOverlay
+@onready var overlay_ult_lightning = $CanvasLayer/SpellBar/TopRow/LightningUltBox/CooldownOverlay 
+# NEW: Make sure this node exists!
+@onready var overlay_ult_plant = $CanvasLayer/SpellBar/TopRow/PlantUltBox/CooldownOverlay
 
 # --- CURSOR NODE ---
 @onready var aim_cursor = $AimCursor
@@ -57,11 +63,14 @@ const MAX_COOLDOWNS = {
 	"WE": 3.0,  
 	"SD": 5.0,  
 	"XC": 10.0,
-	"2345": 15.0 
+	"2345": 15.0,
+	"WERT": 15.0,
+	"XCVB": 15.0 # <--- NEW
 }
 
 var current_cooldowns = {
-	"23": 0.0, "WE": 0.0, "SD": 0.0, "XC": 0.0, "2345": 0.0
+	"23": 0.0, "WE": 0.0, "SD": 0.0, "XC": 0.0, 
+	"2345": 0.0, "WERT": 0.0, "XCVB": 0.0
 }
 
 # --- ANIMATION NODE ---
@@ -77,6 +86,8 @@ var lightning_scene = preload("res://spells/Lightning.tscn")
 var beam_scene = preload("res://spells/beam.tscn")
 var plant_scene = preload("res://spells/plant.tscn")
 var meteor_scene = preload("res://spells/meteor.tscn") 
+var tornado_scene = preload("res://spells/tornado.tscn")
+var poison_scene = preload("res://spells/poison.tscn") # <--- NEW
 
 func _ready():
 	target_position = position
@@ -112,11 +123,20 @@ func _input(event):
 		if key_history.length() > 10: 
 			key_history = key_history.right(10)
 		
+		# --- SPELL CHECKING ---
 		if key_history.ends_with("EPSTEIN"):
 			cast_spell(epstein_scene)
 			key_history = ""
+		
+		# ULTIMATES
 		elif key_history.ends_with("2345"): 
 			start_windup("2345", meteor_scene, "summon", CAST_TIME * 2.0)
+		elif key_history.ends_with("WERT"): 
+			start_windup("WERT", tornado_scene, "summon", CAST_TIME * 2.0)
+		elif key_history.ends_with("XCVB"): # <--- NEW POISON CAST
+			start_windup("XCVB", poison_scene, "center", CAST_TIME * 2.0)
+			
+		# BASIC SPELLS
 		elif key_history.ends_with("23"): start_windup("23", fireball_scene, "cast")
 		elif key_history.ends_with("WE"): start_windup("WE", lightning_scene, "summon")
 		elif key_history.ends_with("SD"): start_windup("SD", beam_scene, "beam")
@@ -144,12 +164,18 @@ func unlock_ultimate_logic(key):
 		"23": 
 			lock_ult_fireball.visible = false
 			spells_unlocked["2345"] = true
-		"WE": lock_ult_lightning.visible = false
+		"WE": 
+			lock_ult_lightning.visible = false
+			spells_unlocked["WERT"] = true 
 		"SD": lock_ult_beam.visible = false
-		"XC": lock_ult_plant.visible = false
+		"XC": 
+			lock_ult_plant.visible = false
+			spells_unlocked["XCVB"] = true # <--- UNLOCK POISON
 
 func get_damage_multiplier(spell_key):
 	if spell_key == "2345": return 1.0 
+	if spell_key == "WERT": return 1.0
+	if spell_key == "XCVB": return 1.0 # <--- NEW
 	return 1.0 + (book_counts[spell_key] * 0.1)
 
 # --- WIND-UP SYSTEM ---
@@ -186,6 +212,7 @@ func _release_spell(id, scene, type):
 		"summon": summon_spell(scene)
 		"beam": cast_beam(scene)
 		"behind": cast_behind(scene)
+		"center": cast_center(scene) # <--- NEW TYPE
 	
 	start_cooldown(id)
 
@@ -196,7 +223,8 @@ func _physics_process(delta):
 	var is_moving = false
 	
 	if position.distance_to(target_position) > 5:
-		velocity = position.direction_to(target_position) * SPEED
+		# MOVEMENT FIX: Uses 'speed' variable now
+		velocity = position.direction_to(target_position) * speed
 		move_and_slide()
 		is_moving = true
 		if not is_attacking(): anim.flip_h = velocity.x < 0
@@ -219,7 +247,9 @@ func _reset_ui():
 	update_overlay("WE", 0)
 	update_overlay("SD", 0)
 	update_overlay("XC", 0)
-	update_overlay("2345", 0) # Reset meteor too
+	update_overlay("2345", 0) 
+	update_overlay("WERT", 0) 
+	update_overlay("XCVB", 0) # <--- NEW
 	
 	lock_ult_fireball.visible = true
 	lock_ult_lightning.visible = true
@@ -262,7 +292,9 @@ func update_overlay(key, percentage):
 		"WE": target_overlay = overlay_lightning
 		"SD": target_overlay = overlay_beam
 		"XC": target_overlay = overlay_plant 
-		"2345": target_overlay = overlay_ult_fireball # <--- NEW LINK
+		"2345": target_overlay = overlay_ult_fireball 
+		"WERT": target_overlay = overlay_ult_lightning 
+		"XCVB": target_overlay = overlay_ult_plant # <--- LINKED HERE
 	
 	if target_overlay: target_overlay.value = percentage
 
@@ -338,6 +370,16 @@ func cast_behind(spell_to_cast):
 	var spell = spell_to_cast.instantiate()
 	get_parent().add_child(spell)
 	spell.global_position = global_position 
+	if spell.has_method("setup"): spell.setup(self)
+
+# NEW: Spawns directly on top of the player
+func cast_center(spell_to_cast):
+	# No attack animation? Or maybe a 'power up' pose? 
+	# Using attack for now to keep it simple.
+	play_attack_anim()
+	var spell = spell_to_cast.instantiate()
+	get_parent().add_child(spell)
+	spell.global_position = global_position # Center on player
 	if spell.has_method("setup"): spell.setup(self)
 
 # --- SILENCE ---
