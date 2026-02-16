@@ -401,3 +401,18 @@ func apply_silenced(silenced_duration):
 func _on_silenced_timer_timeout() -> void:
 	is_silenced = false
 	show_status_text("Silence faded")
+
+
+# --- Taking Damage from Ring ---
+func take_ring_damage(amount):
+	# We use a simplified version of take_damage 
+	# so that the "Hurt" animation doesn't cancel spell casting
+	current_hp -= amount
+	update_hp_ui()
+	
+	# Optional: Tint the player slightly purple/red while in the gas
+	modulate = Color(0.8, 0.2, 0.8) 
+	create_tween().tween_property(self, "modulate", Color.WHITE, 0.2)
+	
+	if current_hp <= 0:
+		die()
