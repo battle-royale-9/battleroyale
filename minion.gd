@@ -6,25 +6,36 @@ const WANDER_RADIUS = 200.0
 const AGGRO_RADIUS = 100.0
 const ATTACK_RANGE = 40.0
 const DAMAGE = 15
-const HEALTH = 30
+var health = 30
 const ATTACK_COOLDOWN = 1.0
+
 
 @onready var start_position = global_position
 var target_position = Vector2()
 @onready var anim = $AnimatedSprite2D
 
+const BOOK_BEAM = preload("uid://c5a1v8y773lb4")
+const BOOK_FIREBALL = preload("uid://dxawtw6wk84pw")
+const BOOK_LIGHTNING = preload("uid://dddh7eu8jyb62")
+const BOOK_PLANT = preload("uid://clt5hm0m3q51u")
+
+
 var wander_time = 0.0
 var is_attacking = false
 var can_attack= true
+var is_dying = false
 
 func _ready():
 	start_position = global_position
 	pick_new_target()
 
 func _physics_process(delta: float) -> void:
+	if is_dying:
+		return
 	if is_attacking:
 		return
-	
+		
+
 	var target = get_closest_player()
 	
 	if target:
@@ -108,3 +119,27 @@ func attack(target):
 		return
 		
 	can_attack = true
+	
+func take_damage(amount):
+	if is_dying:
+		return
+	health -= amount
+	modulate = Color.RED
+	create_tween().tween_property(self, "modulate", Color.WHITE, 0.1)
+	if health <= 0:
+		die()
+		
+func die():
+	is_dying = true
+	anim.play('die')
+	await anim.animation_finished
+	drop_loot()
+	queue_free()
+	
+func drop_loot():
+	if randf() <= 0.2:
+		var possible_books = [BOOK_FIREBALL, BOOK_LIGHTNING, BOOK_BEAM, BOOK_PLANT]
+		var chosen_book = possible_books.pick_random()
+		var loot_instance = chosen_book.instantiate()
+		loot_instance.global_position = global_position
+		get_parent().call_deferred("add_child", loot_instance)

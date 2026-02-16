@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://db2molklg4tce" path="res://minion.gd" id="1_owowx"]
 [ext_resource type="Texture2D" uid="uid://cjfitlplvmnbv" path="res://images/minions/goblins/Run.png" id="2_2w2t2"]
 [ext_resource type="Texture2D" uid="uid://cv1ahaegelbky" path="res://images/minions/goblins/Attack.png" id="2_012lr"]
+[ext_resource type="Texture2D" uid="uid://demeka4jxxr6n" path="res://images/minions/goblins/Death.png" id="3_haax6"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2w2t2"]
 
@@ -38,6 +39,22 @@ region = Rect2(900, 0, 150, 150)
 [sub_resource type="AtlasTexture" id="AtlasTexture_qrtg4"]
 atlas = ExtResource("2_012lr")
 region = Rect2(1050, 0, 150, 150)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_auo3l"]
+atlas = ExtResource("3_haax6")
+region = Rect2(0, 0, 150, 150)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i6hiy"]
+atlas = ExtResource("3_haax6")
+region = Rect2(150, 0, 150, 150)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pfd3w"]
+atlas = ExtResource("3_haax6")
+region = Rect2(300, 0, 150, 150)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gnj65"]
+atlas = ExtResource("3_haax6")
+region = Rect2(450, 0, 150, 150)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_owowx"]
 atlas = ExtResource("1_hlhjt")
@@ -120,6 +137,23 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_auo3l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i6hiy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pfd3w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gnj65")
+}],
+"loop": false,
+"name": &"die",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_owowx")
 }, {
 "duration": 1.0,
@@ -177,6 +211,6 @@ shape = SubResource("CapsuleShape2D_2w2t2")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=500203576]
 sprite_frames = SubResource("SpriteFrames_rdcor")
-animation = &"attack"
-frame = 7
+animation = &"die"
+frame = 3
 frame_progress = 1.0
