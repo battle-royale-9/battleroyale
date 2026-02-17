@@ -22,9 +22,12 @@ var move_speed = 0.0
 
 var last_print_time = 0
 
+@onready var spawn_point_container: Node = $SpawnPoints
+
 func _ready():
 	_setup_minimap_points()
 	start_phase(Phase.FARM1)
+	spawn_player()
 
 func start_phase(new_phase):
 	current_phase = new_phase
@@ -125,3 +128,10 @@ func _setup_minimap_points():
 		var angle = deg_to_rad(i * (360.0 / 64.0))
 		points.push_back(Vector2(cos(angle), sin(angle)))
 	minimap_ring.points = points
+	
+func spawn_player():
+	var all_spawns = spawn_point_container.get_children()
+	var chosen_spawn = all_spawns.pick_random()
+	
+	player.global_position = chosen_spawn.global_position
+	player.target_position = player.global_position

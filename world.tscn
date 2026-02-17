@@ -110,3 +110,17 @@ default_color = Color(0.54509807, 0.54509807, 0.54509807, 1)
 [node name="TimeLabel" type="Label" parent="CanvasLayer" unique_id=1983255133]
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="SpawnPoints" type="Node" parent="." unique_id=2135644176]
+
+[node name="Marker2D" type="Marker2D" parent="SpawnPoints" unique_id=729984406]
+position = Vector2(-1227, -1384)
+
+[node name="Marker2D2" type="Marker2D" parent="SpawnPoints" unique_id=1146413887]
+position = Vector2(1335, -1358)
+
+[node name="Marker2D3" type="Marker2D" parent="SpawnPoints" unique_id=1583851423]
+position = Vector2(-1212, 1279)
+
+[node name="Marker2D4" type="Marker2D" parent="SpawnPoints" unique_id=1318755050]
+position = Vector2(1301, 1268)
