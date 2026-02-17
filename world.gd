@@ -134,13 +134,20 @@ func _setup_minimap_points():
 func spawn_players():
 	if not spawn_point_container: return
 
-	var all_spawns = spawn_point_container.get_children()
+	var available_spawns = spawn_point_container.get_children()
 	
-	# Spawn every player in the list
+	available_spawns.shuffle()
+	
+	if available_spawns.size() < players.size():
+		printerr("WARNING: Not enough spawn points for the number of players!")
+
 	for p in players:
-		var chosen_spawn = all_spawns.pick_random()
+		if available_spawns.is_empty():
+			break
+			
+		var chosen_spawn = available_spawns.pop_back()
+		
 		p.global_position = chosen_spawn.global_position
 		
-		# Reset target position so they don't walk back to 0,0 automatically
 		if "target_position" in p:
 			p.target_position = p.global_position
