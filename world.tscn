@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://clt5hm0m3q51u" path="res://book_spells/book_plant.tscn" id="6_pkg7o"]
 [ext_resource type="PackedScene" uid="uid://dc6wmh0fbcp6q" path="res://dummy.tscn" id="7_pkg7o"]
 [ext_resource type="PackedScene" uid="uid://myvsswghxgp" path="res://spells/barrier.tscn" id="8_gbfbk"]
-[ext_resource type="PackedScene" uid="uid://bea1sbbs3fakm" path="res://minion.tscn" id="9_ioo17"]
+[ext_resource type="PackedScene" uid="uid://bea1sbbs3fakm" path="res://monster/minion.tscn" id="9_ioo17"]
 [ext_resource type="Shader" uid="uid://c1vtocbs1v5ul" path="res://world.gdshader" id="10_wse8f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ic0uy"]
