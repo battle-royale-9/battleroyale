@@ -5,6 +5,9 @@ extends Node2D
 @onready var minimap_ring = $CanvasLayer/Minimap/SubViewport/MinimapRing
 @onready var player = $Player
 
+# --- BOT SPAWNING (for testing) ---
+var bot_scene = preload("res://bot.tscn")
+
 # --- PHASE SETTINGS ---
 enum Phase { FARM1, SHRINK1, PVP2, SHRINK2, FINAL_PVP, FINAL_SHRINK }
 var current_phase = Phase.FARM1
@@ -25,6 +28,22 @@ var last_print_time = 0
 func _ready():
 	_setup_minimap_points()
 	start_phase(Phase.FARM1)
+
+func _input(event):
+	# Press B to spawn a bot near the player for testing
+	if event is InputEventKey and event.pressed and event.keycode == KEY_B:
+		spawn_bot_near_player()
+
+func spawn_bot_near_player():
+	if player == null:
+		return
+	
+	var bot = bot_scene.instantiate()
+	# Spawn bot in a random position around the player
+	var offset = Vector2(randf_range(-200, 200), randf_range(-200, 200))
+	bot.position = player.position + offset
+	add_child(bot)
+	print("Bot spawned at: ", bot.position)
 
 func start_phase(new_phase):
 	current_phase = new_phase
