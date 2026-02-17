@@ -23,7 +23,7 @@ var current_phase = Phase.FARM1
 var phase_timer = 60.0 
 
 # --- RING CONSTANTS ---
-var possible_centers = [Vector2(1000, 1000), Vector2(1000, -1000), Vector2(-1000, 1000), Vector2(-1000, -1000)]
+var possible_centers = [Vector2(0, 0)]
 var current_center = Vector2.ZERO
 var target_center = Vector2.ZERO
 var chosen_corner = Vector2.ZERO 
