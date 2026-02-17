@@ -18803,8 +18803,10 @@ position = Vector2(-559, -501)
 [node name="Player2" parent="." unique_id=1906968533 instance=ExtResource("13_h7oxj")]
 position = Vector2(167, -84)
 
-[node name="CharacterBody2D" parent="." unique_id=673000139 instance=ExtResource("14_h7oxj")]
-position = Vector2(30, 160)
+[node name="bot" type="Node" parent="." unique_id=1751880715]
+
+[node name="CharacterBody2D" parent="bot" unique_id=673000139 instance=ExtResource("14_h7oxj")]
+position = Vector2(-121, 174)
 
 [node name="buildings" type="TileMapLayer" parent="." unique_id=1670697557]
 z_index = 1
