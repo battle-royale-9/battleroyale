@@ -16,7 +16,8 @@ func _ready():
 			spawn_mob()
 
 func spawn_mob():
-	if current_mobs >= max_mobs or monster_scene == null: return
+	# 1. Safety Check: If spawner is gone, don't spawn
+	if current_mobs >= max_mobs or monster_scene == null or not is_inside_tree(): return
 
 	var mob = monster_scene.instantiate()
 	
@@ -28,7 +29,10 @@ func spawn_mob():
 	var dist = sqrt(randf()) * spawn_radius 
 	mob.global_position = global_position + (Vector2(cos(angle), sin(angle)) * dist)
 	
-	get_tree().current_scene.call_deferred("add_child", mob)
+	# --- THE FIX IS HERE ---
+	# Instead of current_scene (The UI), add to the Parent (The Map)
+	get_parent().call_deferred("add_child", mob)
+	# -----------------------
 	
 	current_mobs += 1
 	mob.tree_exited.connect(_on_mob_death)
