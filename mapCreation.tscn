@@ -14,7 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://c2poeq2feik01" path="res://spawner/mushroom_spawner.tscn" id="11_oql6p"]
 [ext_resource type="PackedScene" uid="uid://djcy6yffkiix6" path="res://spawner/flyingeye_spawner.tscn" id="12_h7oxj"]
 [ext_resource type="PackedScene" uid="uid://cj5x877s8rbkl" path="res://playerAnimated.tscn" id="12_oql6p"]
-[ext_resource type="PackedScene" path="res://playerAnimatedController.tscn" id="13_h7oxj"]
+[ext_resource type="PackedScene" uid="uid://buqmnygvi1ri5" path="res://playerAnimatedController.tscn" id="13_h7oxj"]
 [ext_resource type="PackedScene" uid="uid://beln5hmvmud4" path="res://bot.tscn" id="14_h7oxj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5isgq"]
@@ -18783,20 +18783,80 @@ tile_set = SubResource("TileSet_bfa0f")
 [node name="Node2D" parent="spawner/goblin" unique_id=1129135656 instance=ExtResource("11_54reb")]
 position = Vector2(361, 415)
 
+[node name="Node2D2" parent="spawner/goblin" unique_id=1487508653 instance=ExtResource("11_54reb")]
+position = Vector2(1609, 428)
+
+[node name="Node2D3" parent="spawner/goblin" unique_id=496278599 instance=ExtResource("11_54reb")]
+position = Vector2(1067, 759)
+
+[node name="Node2D4" parent="spawner/goblin" unique_id=1146180439 instance=ExtResource("11_54reb")]
+position = Vector2(503, 1142)
+
+[node name="Node2D5" parent="spawner/goblin" unique_id=850403366 instance=ExtResource("11_54reb")]
+position = Vector2(1700, 1284)
+
+[node name="Node2D6" parent="spawner/goblin" unique_id=143785652 instance=ExtResource("11_54reb")]
+position = Vector2(1149, 1646)
+
 [node name="skeleton" type="Node" parent="spawner" unique_id=575160021]
 
 [node name="Node2D" parent="spawner/skeleton" unique_id=1737366322 instance=ExtResource("10_yx57n")]
 position = Vector2(-569, 436)
 
+[node name="Node2D2" parent="spawner/skeleton" unique_id=588011817 instance=ExtResource("10_yx57n")]
+position = Vector2(-1668, 414)
+
+[node name="Node2D3" parent="spawner/skeleton" unique_id=1553064192 instance=ExtResource("10_yx57n")]
+position = Vector2(-1142, 824)
+
+[node name="Node2D4" parent="spawner/skeleton" unique_id=1858392779 instance=ExtResource("10_yx57n")]
+position = Vector2(-1697, 1148)
+
+[node name="Node2D5" parent="spawner/skeleton" unique_id=685599076 instance=ExtResource("10_yx57n")]
+position = Vector2(-398, 1199)
+
+[node name="Node2D6" parent="spawner/skeleton" unique_id=611952485 instance=ExtResource("10_yx57n")]
+position = Vector2(-1156, 1650)
+
 [node name="mushroom" type="Node" parent="spawner" unique_id=910853935]
 
-[node name="Node2D" parent="spawner/mushroom" unique_id=58930748 instance=ExtResource("11_oql6p")]
-position = Vector2(468, -428)
+[node name="Node2D2" parent="spawner/mushroom" unique_id=223210705 instance=ExtResource("11_oql6p")]
+position = Vector2(1168, -441)
+
+[node name="Node2D3" parent="spawner/mushroom" unique_id=338991431 instance=ExtResource("11_oql6p")]
+position = Vector2(475, -1001)
+
+[node name="Node2D4" parent="spawner/mushroom" unique_id=1108547696 instance=ExtResource("11_oql6p")]
+position = Vector2(1758, -738)
+
+[node name="Node2D5" parent="spawner/mushroom" unique_id=1498764182 instance=ExtResource("11_oql6p")]
+position = Vector2(1171, -1328)
+
+[node name="Node2D6" parent="spawner/mushroom" unique_id=1325213063 instance=ExtResource("11_oql6p")]
+position = Vector2(645, -1731)
+
+[node name="Node2D7" parent="spawner/mushroom" unique_id=784669482 instance=ExtResource("11_oql6p")]
+position = Vector2(1738, -1751)
 
 [node name="flyingeye" type="Node" parent="spawner" unique_id=1793445960]
 
 [node name="Node2D" parent="spawner/flyingeye" unique_id=199198064 instance=ExtResource("12_h7oxj")]
-position = Vector2(-559, -501)
+position = Vector2(-976, -344)
+
+[node name="Node2D2" parent="spawner/flyingeye" unique_id=1220694194 instance=ExtResource("12_h7oxj")]
+position = Vector2(-456, -1058)
+
+[node name="Node2D3" parent="spawner/flyingeye" unique_id=267617734 instance=ExtResource("12_h7oxj")]
+position = Vector2(-1722, -828)
+
+[node name="Node2D4" parent="spawner/flyingeye" unique_id=30528333 instance=ExtResource("12_h7oxj")]
+position = Vector2(-1152, -1214)
+
+[node name="Node2D5" parent="spawner/flyingeye" unique_id=1821236774 instance=ExtResource("12_h7oxj")]
+position = Vector2(-529, -1721)
+
+[node name="Node2D6" parent="spawner/flyingeye" unique_id=2011251943 instance=ExtResource("12_h7oxj")]
+position = Vector2(-1736, -1761)
 
 [node name="Player1" parent="." unique_id=262399486 instance=ExtResource("12_oql6p")]
 
@@ -18806,7 +18866,28 @@ position = Vector2(167, -84)
 [node name="bot" type="Node" parent="." unique_id=1751880715]
 
 [node name="CharacterBody2D" parent="bot" unique_id=673000139 instance=ExtResource("14_h7oxj")]
-position = Vector2(-121, 174)
+position = Vector2(-1331, 584)
+
+[node name="CharacterBody2D2" parent="bot" unique_id=1371751973 instance=ExtResource("14_h7oxj")]
+position = Vector2(-1021, 1617)
+
+[node name="CharacterBody2D3" parent="bot" unique_id=727175469 instance=ExtResource("14_h7oxj")]
+position = Vector2(1666, 1021)
+
+[node name="CharacterBody2D4" parent="bot" unique_id=1223337316 instance=ExtResource("14_h7oxj")]
+position = Vector2(852, 1387)
+
+[node name="CharacterBody2D5" parent="bot" unique_id=579422970 instance=ExtResource("14_h7oxj")]
+position = Vector2(-754, -1753)
+
+[node name="CharacterBody2D6" parent="bot" unique_id=1182173234 instance=ExtResource("14_h7oxj")]
+position = Vector2(-1494, -819)
+
+[node name="CharacterBody2D7" parent="bot" unique_id=304483412 instance=ExtResource("14_h7oxj")]
+position = Vector2(1669, -1583)
+
+[node name="CharacterBody2D8" parent="bot" unique_id=1950003700 instance=ExtResource("14_h7oxj")]
+position = Vector2(612, -1133)
 
 [node name="buildings" type="TileMapLayer" parent="." unique_id=1670697557]
 z_index = 1
