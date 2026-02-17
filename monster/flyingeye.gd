@@ -132,14 +132,19 @@ func take_damage(amount):
 func die():
 	is_dying = true
 	anim.play('die')
-	await anim.animation_finished
+
+	await get_tree().create_timer(0.5).timeout 
+	
 	drop_loot()
 	queue_free()
-	
+
 func drop_loot():
 	if randf() <= 0.2:
 		var possible_books = [BOOK_FIREBALL, BOOK_LIGHTNING, BOOK_BEAM, BOOK_PLANT]
 		var chosen_book = possible_books.pick_random()
-		var loot_instance = chosen_book.instantiate()
-		loot_instance.global_position = global_position
-		get_parent().call_deferred("add_child", loot_instance)
+		
+		if chosen_book:
+			var loot_instance = chosen_book.instantiate()
+			loot_instance.global_position = global_position
+
+			get_tree().current_scene.call_deferred("add_child", loot_instance)

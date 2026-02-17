@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bea1sbbs3fakm"]
 
 [ext_resource type="Texture2D" uid="uid://bnxlx5hsb67jd" path="res://images/minions/goblins/Idle.png" id="1_hlhjt"]
-[ext_resource type="Script" uid="uid://db2molklg4tce" path="res://minion.gd" id="1_owowx"]
+[ext_resource type="Script" uid="uid://db2molklg4tce" path="res://monster/minion.gd" id="1_owowx"]
 [ext_resource type="Texture2D" uid="uid://cjfitlplvmnbv" path="res://images/minions/goblins/Run.png" id="2_2w2t2"]
 [ext_resource type="Texture2D" uid="uid://cv1ahaegelbky" path="res://images/minions/goblins/Attack.png" id="2_012lr"]
 [ext_resource type="Texture2D" uid="uid://demeka4jxxr6n" path="res://images/minions/goblins/Death.png" id="3_haax6"]
@@ -200,6 +200,7 @@ animations = [{
 }]
 
 [node name="Minion" type="CharacterBody2D" unique_id=386353379]
+scale = Vector2(0.7, 0.7)
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_owowx")
@@ -212,5 +213,3 @@ shape = SubResource("CapsuleShape2D_2w2t2")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=500203576]
 sprite_frames = SubResource("SpriteFrames_rdcor")
 animation = &"die"
-frame = 3
-frame_progress = 1.0
