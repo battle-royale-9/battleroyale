@@ -89,6 +89,8 @@ var tornado_scene = preload("res://spells/tornado.tscn")
 var poison_scene = preload("res://spells/poison.tscn") 
 var big_beam_scene = preload("res://spells/beam.tscn") 
 
+signal player_died(player)
+
 func _ready():
 	anim.play("idle")
 	hp_bar.max_value = max_hp
@@ -322,11 +324,24 @@ func heal(amount):
 	create_tween().tween_property(self, "modulate", Color.WHITE, 0.3)
 
 func die():
+	# 1. Notify the world
+	emit_signal("player_died", self)
+	
 	is_dying = true
 	velocity = Vector2.ZERO
 	anim.play('die')
+	
+	# 2. Disable collision immediately so others can walk through
+	$CollisionShape2D.set_deferred("disabled", true)
+	
 	await anim.animation_finished
-	queue_free()
+	
+	# 3. CRITICAL FIX: Do NOT use queue_free().
+	# Just hide the player and stop their logic.
+	# This keeps the Camera alive so the screen doesn't jump!
+	visible = false
+	process_mode = Node.PROCESS_MODE_DISABLED
+	
 func is_hurting() -> bool: return anim.animation == "hurt" and anim.is_playing()
 func is_attacking() -> bool: return (anim.animation == "attack1" or anim.animation == "attack2") and anim.is_playing()
 

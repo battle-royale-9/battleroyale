@@ -21,6 +21,10 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/stretch/scale=0.66
 
+[global_group]
+
+players=""
+
 [input]
 
 move_left={
