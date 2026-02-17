@@ -350,7 +350,6 @@ func die():
 	
 	is_dying = true
 	velocity = Vector2.ZERO
-	#anim.play('die')
 	
 	# 2. Disable collision immediately so others can walk through
 	$CollisionShape2D.set_deferred("disabled", true)
