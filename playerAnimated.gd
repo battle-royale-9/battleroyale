@@ -8,6 +8,7 @@ var target_position = Vector2.ZERO
 var key_history = ""
 var is_casting = false 
 var is_silenced = false
+var is_dying = false
 
 # --- HEALTH SETTINGS ---
 var max_hp = 50      
@@ -341,8 +342,12 @@ func heal(amount):
 	modulate = Color.GREEN
 	create_tween().tween_property(self, "modulate", Color.WHITE, 0.3)
 
-func die(): get_tree().reload_current_scene()
-
+func die():
+	is_dying = true
+	velocity = Vector2.ZERO
+	anim.play('die')
+	await anim.animation_finished
+	queue_free()
 func is_hurting() -> bool: return anim.animation == "hurt" and anim.is_playing()
 func is_attacking() -> bool: return (anim.animation == "attack1" or anim.animation == "attack2") and anim.is_playing()
 

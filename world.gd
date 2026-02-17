@@ -10,6 +10,10 @@ extends Node2D
 # --- PLAYERS (Now supports 2 players) ---
 var players = []
 
+var game_over = false
+@onready var winner_label: Label = $Winner/WinnerLabel
+var initial_player_count = 0
+
 # --- PHASE SETTINGS ---
 enum Phase { FARM1, SHRINK1, PVP2, SHRINK2, FINAL_PVP, FINAL_SHRINK }
 var current_phase = Phase.FARM1
@@ -35,7 +39,7 @@ func _ready():
 		
 	if map.has_node("Player2"): 
 		players.append(map.get_node("Player2"))
-	print(players)
+	initial_player_count = players.size()
 	if players.is_empty():
 		print("WARNING: No players found in mapCreation!")
 
@@ -91,6 +95,8 @@ func advance_phase():
 		print("Match Ended!")
 
 func _process(delta):
+	if game_over: return
+	_check_win_condition()
 	# 1. Handle Phase Timer
 	phase_timer -= delta
 	
@@ -131,23 +137,45 @@ func _setup_minimap_points():
 		points.push_back(Vector2(cos(angle), sin(angle)))
 	minimap_ring.points = points
 	
-func spawn_players():
-	if not spawn_point_container: return
-
-	var available_spawns = spawn_point_container.get_children()
-	
-	available_spawns.shuffle()
-	
-	if available_spawns.size() < players.size():
-		printerr("WARNING: Not enough spawn points for the number of players!")
-
+func _check_win_condition():
+	var living_players = []
 	for p in players:
-		if available_spawns.is_empty():
-			break
+		if is_instance_valid(p):
+			living_players.append(p)
+	
+	players = living_players
+	
+	if  initial_player_count > 1 and players.size() == 1:
+		game_over = true
+		
+		if winner_label:
+			winner_label.text = "WINNER!"
+			winner_label.visible = true
+			winner_label.move_to_front()
 			
-		var chosen_spawn = available_spawns.pop_back()
+		print("GAME OVER - WINNER DECLARED")
 		
-		p.global_position = chosen_spawn.global_position
+		get_tree().paused = true
 		
-		if "target_position" in p:
-			p.target_position = p.global_position
+
+func spawn_players():
+	pass
+	#if not spawn_point_container: return
+#
+	#var available_spawns = spawn_point_container.get_children()
+	#
+	#available_spawns.shuffle()
+	#
+	#if available_spawns.size() < players.size():
+		#printerr("WARNING: Not enough spawn points for the number of players!")
+#
+	#for p in players:
+		#if available_spawns.is_empty():
+			#break
+			#
+		#var chosen_spawn = available_spawns.pop_back()
+		#
+		#p.global_position = chosen_spawn.global_position
+		#
+		#if "target_position" in p:
+			#p.target_position = p.global_position
