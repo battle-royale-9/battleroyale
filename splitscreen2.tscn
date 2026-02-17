@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://4fkfi87lcsyg"]
+
+[ext_resource type="PackedScene" uid="uid://jrana7xi5tt8" path="res://world.tscn" id="1_pd3qm"]
+
+[node name="HBoxContainer" type="HBoxContainer" unique_id=1804409038]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="." unique_id=1882682647]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer" unique_id=1775941622]
+handle_input_locally = false
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="WorldContent" parent="SubViewportContainer/SubViewport" unique_id=973071838 instance=ExtResource("1_pd3qm")]
+
+[node name="CameraP1" type="Camera2D" parent="SubViewportContainer/SubViewport" unique_id=633490987]
+
+[node name="SubViewportContainer2" type="SubViewportContainer" parent="." unique_id=1430050811]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer2" unique_id=519130715]
+handle_input_locally = false
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="CameraP2" type="Camera2D" parent="SubViewportContainer2/SubViewport" unique_id=1618966081]

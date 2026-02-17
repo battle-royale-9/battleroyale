@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://jrana7xi5tt8"]
 
-[ext_resource type="Script" path="res://world.gd" id="1_ic0uy"]
+[ext_resource type="Script" uid="uid://d34cp8q5hr61y" path="res://world.gd" id="1_ic0uy"]
 [ext_resource type="PackedScene" uid="uid://2ww4gym3oflq" path="res://mapCreation.tscn" id="2_wse8f"]
-[ext_resource type="PackedScene" path="res://spells/barrier.tscn" id="8_gbfbk"]
+[ext_resource type="PackedScene" uid="uid://myvsswghxgp" path="res://spells/barrier.tscn" id="8_gbfbk"]
 [ext_resource type="Shader" path="res://world.gdshader" id="10_wse8f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ic0uy"]
