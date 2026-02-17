@@ -10,7 +10,6 @@ signal match_ended(winner_text)
 @onready var map: Node2D = $Map
 
 # --- SPAWN POINT REFERENCE ---
-# Make sure you have a Node named "SpawnPoints" holding Marker2Ds in your scene
 @onready var spawn_point_container = get_node_or_null("SpawnPoints")
 
 # --- DYNAMIC PLAYER TRACKING ---
@@ -34,16 +33,9 @@ var move_speed = 0.0
 var last_print_time = 0
 
 func _ready():
-	# 1. Find players and link signals
 	link_player_signals()
-	
-	# 2. Setup visual aids
 	_setup_minimap_points()
-	
-	# 3. Teleport players to random spots
 	spawn_players()
-	
-	# 4. Start the game loop
 	start_phase(Phase.FARM1)
 
 # --- CRITICAL FIX: The Connector ---
@@ -58,46 +50,40 @@ func link_player_signals():
 			if not entity.player_died.is_connected(_on_entity_died):
 				entity.player_died.connect(_on_entity_died)
 
-# --- SPAWN LOGIC (NEW) ---
+# --- SPAWN LOGIC ---
 func spawn_players():
 	if not spawn_point_container:
 		print("WORLD ERROR: 'SpawnPoints' node is missing from the scene!")
 		return
 
-	# 1. Get all Marker2D nodes
 	var available_spawns = spawn_point_container.get_children()
-	
-	# 2. Shuffle them to make it random
 	available_spawns.shuffle()
 	
-	# 3. Check if we have enough points
 	if available_spawns.size() < active_players.size():
 		print("WORLD WARNING: Not enough spawn points for all players!")
 
-	# 4. Assign positions
 	for i in range(active_players.size()):
 		var player = active_players[i]
-		
-		# Stop if we run out of spawn points
-		if available_spawns.is_empty():
-			break
-			
-		# Pick the last spawn point from the list and remove it (so no duplicates)
+		if available_spawns.is_empty(): break
 		var chosen_spawn = available_spawns.pop_back()
-		
-		# A. Teleport the visual body
 		player.global_position = chosen_spawn.global_position
-		
-		# B. CRITICAL: Update the click-to-move target to prevent walking back
 		if "target_position" in player:
 			player.target_position = player.global_position
 
-# --- DYNAMIC VICTORY LOGIC ---
+# --- DYNAMIC VICTORY LOGIC (WITH DEBUG) ---
 func _on_entity_died(dead_entity):
 	if game_over: return
 	if active_players.has(dead_entity):
 		active_players.erase(dead_entity)
-	print(len(active_players))
+	
+	# --- DEBUG REPORT ---
+	print("--- DEATH REPORT ---")
+	print("Entity Died: ", dead_entity.name)
+	print("Remaining Players: ", active_players.size())
+	for p in active_players:
+		print("  - Still Alive: ", p.name)
+	print("--------------------")
+	# --------------------
 	
 	# Check Win Condition
 	if active_players.size() == 1:
