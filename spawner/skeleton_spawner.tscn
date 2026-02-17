@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://dr4h4j8s4715n"]
+
+[ext_resource type="Script" uid="uid://deajbvayimh2x" path="res://spawner/skeleton_spawner.gd" id="1_hgxdd"]
+[ext_resource type="PackedScene" uid="uid://q22xghfixdhi" path="res://monster/skeleton.tscn" id="2_4ru3c"]
+
+[node name="Node2D" type="Node2D" unique_id=1129135656]
+script = ExtResource("1_hgxdd")
+monster_scene = ExtResource("2_4ru3c")
+max_mobs = 4
+spawn_radius = 100.0

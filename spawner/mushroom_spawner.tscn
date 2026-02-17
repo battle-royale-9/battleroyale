@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://c2poeq2feik01"]
+
+[ext_resource type="Script" uid="uid://o11n2qmq64j6" path="res://spawner/mushroom_spawner.gd" id="1_b4l5i"]
+[ext_resource type="PackedScene" uid="uid://df0o8gcrp3uiw" path="res://monster/mushroom.tscn" id="2_cmx5q"]
+
+[node name="Node2D" type="Node2D" unique_id=1129135656]
+script = ExtResource("1_b4l5i")
+monster_scene = ExtResource("2_cmx5q")
+max_mobs = 4
+spawn_radius = 100.0

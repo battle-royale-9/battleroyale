@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://djcy6yffkiix6"]
+
+[ext_resource type="Script" uid="uid://dj1dcirwtiytm" path="res://spawner/flyingeye_spawner.gd" id="1_yldfk"]
+[ext_resource type="PackedScene" uid="uid://cxolqo7oamrvn" path="res://monster/flyingeye.tscn" id="2_a3toa"]
+
+[node name="Node2D" type="Node2D" unique_id=1129135656]
+script = ExtResource("1_yldfk")
+monster_scene = ExtResource("2_a3toa")
+max_mobs = 4
+spawn_radius = 100.0
