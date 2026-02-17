@@ -19,7 +19,7 @@ var game_over = false
 # --- PHASE SETTINGS ---
 enum Phase { FARM1, SHRINK1, PVP2, SHRINK2, FINAL_PVP, FINAL_SHRINK }
 var current_phase = Phase.FARM1
-var phase_timer = 1
+var phase_timer = 60
 
 # --- RING CONSTANTS ---
 var possible_centers = [Vector2(0, 0)]
