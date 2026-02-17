@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://buqmnygvi1ri5"]
 
-[ext_resource type="Script" uid="uid://dolu8t4ocmpci" path="res://playerAnimatedController.gd" id="1_3i7kr"]
+[ext_resource type="Script" path="res://playerAnimatedController.gd" id="1_3i7kr"]
 [ext_resource type="Texture2D" uid="uid://wivjh6v3o11t" path="res://images/playerAnim/Attack1.png" id="2_8d5gg"]
 [ext_resource type="Texture2D" uid="uid://bj4r07dr5iroh" path="res://images/playerAnim/Attack2.png" id="3_5wdo2"]
 [ext_resource type="Texture2D" uid="uid://bwkcte2el5kli" path="res://images/playerAnim/Hit.png" id="4_weflv"]
@@ -317,7 +317,7 @@ content_margin_bottom = 0.0
 bg_color = Color(0.75686276, 0.84705883, 0.19607843, 1)
 anti_aliasing = false
 
-[node name="CharacterBody2D" type="CharacterBody2D" unique_id=262399486]
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=262399486 groups=["players"]]
 z_index = 1
 collision_layer = 2
 collision_mask = 3

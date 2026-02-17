@@ -18780,7 +18780,7 @@ tile_set = SubResource("TileSet_bfa0f")
 [node name="goblin" type="Node" parent="spawner" unique_id=293016704]
 
 [node name="Node2D" parent="spawner/goblin" unique_id=1129135656 instance=ExtResource("11_54reb")]
-position = Vector2(455, 466)
+position = Vector2(361, 415)
 
 [node name="skeleton" type="Node" parent="spawner" unique_id=575160021]
 
@@ -18797,7 +18797,7 @@ position = Vector2(468, -428)
 [node name="Node2D" parent="spawner/flyingeye" unique_id=199198064 instance=ExtResource("12_h7oxj")]
 position = Vector2(-559, -501)
 
-[node name="Player1" parent="." unique_id=262399486 instance=ExtResource("12_oql6p")]
+[node name="Player1" parent="." unique_id=262399486 groups=["players"] instance=ExtResource("12_oql6p")]
 
 [node name="Player2" parent="." unique_id=1906968533 instance=ExtResource("13_h7oxj")]
 
