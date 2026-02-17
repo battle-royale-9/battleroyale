@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bwkcte2el5kli" path="res://images/playerAnim/Hit.png" id="4_almir"]
 [ext_resource type="Texture2D" uid="uid://do17cipxsl33r" path="res://images/playerAnim/Idle.png" id="5_w54jd"]
 [ext_resource type="Texture2D" uid="uid://decbd02atleyp" path="res://images/playerAnim/Run.png" id="6_vfk1a"]
-[ext_resource type="PackedScene" path="res://spells/barrier.tscn" id="7_wo5b3"]
+[ext_resource type="PackedScene" uid="uid://myvsswghxgp" path="res://spells/barrier.tscn" id="7_wo5b3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bhlf4"]
 atlas = ExtResource("2_ptap6")

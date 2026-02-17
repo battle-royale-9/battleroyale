@@ -329,7 +329,7 @@ func die():
 	
 	is_dying = true
 	velocity = Vector2.ZERO
-	anim.play('die')
+	#anim.play('die')
 	
 	# 2. Disable collision immediately so others can walk through
 	$CollisionShape2D.set_deferred("disabled", true)
@@ -386,3 +386,16 @@ func cast_center(spell_to_cast):
 	get_parent().add_child(spell)
 	spell.global_position = global_position 
 	if spell.has_method("setup"): spell.setup(self)
+	
+func take_ring_damage(amount):
+	# We use a simplified version of take_damage 
+	# so that the "Hurt" animation doesn't cancel spell casting
+	current_hp -= amount
+	update_hp_ui()
+	
+	# Optional: Tint the player slightly purple/red while in the gas
+	modulate = Color(0.8, 0.2, 0.8) 
+	create_tween().tween_property(self, "modulate", Color.WHITE, 0.2)
+	
+	if current_hp <= 0:
+		die()

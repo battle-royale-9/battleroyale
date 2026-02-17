@@ -20,7 +20,7 @@ var game_over = false
 # --- PHASE SETTINGS ---
 enum Phase { FARM1, SHRINK1, PVP2, SHRINK2, FINAL_PVP, FINAL_SHRINK }
 var current_phase = Phase.FARM1
-var phase_timer = 60.0 
+var phase_timer = 1
 
 # --- RING CONSTANTS ---
 var possible_centers = [Vector2(1000, 1000), Vector2(1000, -1000), Vector2(-1000, 1000), Vector2(-1000, -1000)]
@@ -95,9 +95,9 @@ func spawn_players():
 # --- DYNAMIC VICTORY LOGIC ---
 func _on_entity_died(dead_entity):
 	if game_over: return
-
 	if active_players.has(dead_entity):
 		active_players.erase(dead_entity)
+	print(len(active_players))
 	
 	# Check Win Condition
 	if active_players.size() == 1:

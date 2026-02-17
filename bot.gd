@@ -203,3 +203,15 @@ func die():
 
 func is_attacking() -> bool:
 	return (anim.animation == "attack1" or anim.animation == "attack2") and anim.is_playing()
+	
+func take_ring_damage(amount):
+	# We use a simplified version of take_damage 
+	# so that the "Hurt" animation doesn't cancel spell casting
+	current_hp -= amount
+	
+	# Optional: Tint the player slightly purple/red while in the gas
+	modulate = Color(0.8, 0.2, 0.8) 
+	create_tween().tween_property(self, "modulate", Color.WHITE, 0.2)
+	
+	if current_hp <= 0:
+		die()
