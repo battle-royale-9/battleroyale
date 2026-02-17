@@ -15,6 +15,8 @@ enum Phase { FARM1, SHRINK1, PVP2, SHRINK2, FINAL_PVP, FINAL_SHRINK }
 var current_phase = Phase.FARM1
 var phase_timer = 60.0 
 
+@onready var map: Node2D = $Map
+
 # --- RING CONSTANTS ---
 var possible_centers = [Vector2(1000, 1000), Vector2(1000, -1000), Vector2(-1000, 1000), Vector2(-1000, -1000)]
 var current_center = Vector2.ZERO
@@ -28,9 +30,12 @@ var last_print_time = 0
 
 func _ready():
 	# 1. Find both players safely
-	if has_node("Player1"): players.append($Player1)
-	if has_node("Player2"): players.append($Player2)
-	
+	if map.has_node("Player1"): 
+		players.append(map.get_node("Player1"))
+		
+	if map.has_node("Player2"): 
+		players.append(map.get_node("Player2"))
+	print(players)
 	if players.is_empty():
 		print("WARNING: No players found in mapCreation!")
 
