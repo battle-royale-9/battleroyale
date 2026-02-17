@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://jrana7xi5tt8"]
 
-[ext_resource type="Script" path="res://world.gd" id="1_ic0uy"]
-[ext_resource type="PackedScene" path="res://mapCreation.tscn" id="2_wse8f"]
-[ext_resource type="PackedScene" path="res://spells/barrier.tscn" id="8_gbfbk"]
-[ext_resource type="Shader" path="res://world.gdshader" id="10_wse8f"]
+[ext_resource type="Script" uid="uid://d34cp8q5hr61y" path="res://world.gd" id="1_ic0uy"]
+[ext_resource type="PackedScene" uid="uid://clmrdcn4g2ax4" path="res://mapCreation.tscn" id="2_wse8f"]
+[ext_resource type="PackedScene" uid="uid://myvsswghxgp" path="res://spells/barrier.tscn" id="8_gbfbk"]
+[ext_resource type="Shader" uid="uid://c1vtocbs1v5ul" path="res://world.gdshader" id="10_wse8f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ic0uy"]
 shader = ExtResource("10_wse8f")

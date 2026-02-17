@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://do17cipxsl33r" path="res://images/playerAnim/Idle.png" id="1_jub5n"]
 [ext_resource type="Script" uid="uid://dd4yrmyy7eq3y" path="res://playerAnimated.gd" id="1_x7qct"]
 [ext_resource type="Texture2D" uid="uid://wivjh6v3o11t" path="res://images/playerAnim/Attack1.png" id="2_deskq"]
-[ext_resource type="PackedScene" path="res://spells/barrier.tscn" id="2_l7a1p"]
+[ext_resource type="PackedScene" uid="uid://myvsswghxgp" path="res://spells/barrier.tscn" id="2_l7a1p"]
 [ext_resource type="Texture2D" uid="uid://decbd02atleyp" path="res://images/playerAnim/Run.png" id="2_x7qct"]
 [ext_resource type="Texture2D" uid="uid://bj4r07dr5iroh" path="res://images/playerAnim/Attack2.png" id="3_dnqdc"]
 [ext_resource type="Texture2D" uid="uid://bwkcte2el5kli" path="res://images/playerAnim/Hit.png" id="4_dnqdc"]
@@ -470,7 +470,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Beam"
+text = "Silence"
 label_settings = SubResource("LabelSettings_omh87")
 horizontal_alignment = 1
 vertical_alignment = 1

@@ -9,6 +9,10 @@ signal match_ended(winner_text)
 @onready var minimap_ring = get_node_or_null("CanvasLayer/Minimap/SubViewport/MinimapRing")
 @onready var map: Node2D = $Map
 
+# --- SPAWN POINT REFERENCE ---
+# Make sure you have a Node named "SpawnPoints" holding Marker2Ds in your scene
+@onready var spawn_point_container = get_node_or_null("SpawnPoints")
+
 # --- DYNAMIC PLAYER TRACKING ---
 var active_players = [] 
 var game_over = false
@@ -30,54 +34,80 @@ var move_speed = 0.0
 var last_print_time = 0
 
 func _ready():
-	# Initial attempt to find players
+	# 1. Find players and link signals
 	link_player_signals()
+	
+	# 2. Setup visual aids
 	_setup_minimap_points()
+	
+	# 3. Teleport players to random spots
+	spawn_players()
+	
+	# 4. Start the game loop
 	start_phase(Phase.FARM1)
 
 # --- CRITICAL FIX: The Connector ---
-# We make this a public function so HBox can call it after moving Player 2
 func link_player_signals():
 	var all_entities = get_tree().get_nodes_in_group("players")
 	
 	for entity in all_entities:
 		if not active_players.has(entity):
 			active_players.append(entity)
-			print("WORLD: Tracked new entity: ", entity.name)
 		
-		# Connect the signal if not already connected
 		if entity.has_signal("player_died"):
 			if not entity.player_died.is_connected(_on_entity_died):
 				entity.player_died.connect(_on_entity_died)
-				print("WORLD: Connected to death signal of: ", entity.name)
-		else:
-			print("WORLD WARNING: ", entity.name, " is missing 'player_died' signal!")
+
+# --- SPAWN LOGIC (NEW) ---
+func spawn_players():
+	if not spawn_point_container:
+		print("WORLD ERROR: 'SpawnPoints' node is missing from the scene!")
+		return
+
+	# 1. Get all Marker2D nodes
+	var available_spawns = spawn_point_container.get_children()
+	
+	# 2. Shuffle them to make it random
+	available_spawns.shuffle()
+	
+	# 3. Check if we have enough points
+	if available_spawns.size() < active_players.size():
+		print("WORLD WARNING: Not enough spawn points for all players!")
+
+	# 4. Assign positions
+	for i in range(active_players.size()):
+		var player = active_players[i]
+		
+		# Stop if we run out of spawn points
+		if available_spawns.is_empty():
+			break
+			
+		# Pick the last spawn point from the list and remove it (so no duplicates)
+		var chosen_spawn = available_spawns.pop_back()
+		
+		# A. Teleport the visual body
+		player.global_position = chosen_spawn.global_position
+		
+		# B. CRITICAL: Update the click-to-move target to prevent walking back
+		if "target_position" in player:
+			player.target_position = player.global_position
 
 # --- DYNAMIC VICTORY LOGIC ---
 func _on_entity_died(dead_entity):
 	if game_over: return
 
-	print("WORLD DEBUG: Received death signal from ", dead_entity.name)
-
-	# 1. Remove the dead guy from our list
 	if active_players.has(dead_entity):
 		active_players.erase(dead_entity)
 	
-	print("WORLD DEBUG: Remaining active entities: ", active_players.size())
-
-	# 2. Check Win Condition
-	# If only one entity remains (could be a player or a bot)
+	# Check Win Condition
 	if active_players.size() == 1:
 		game_over = true
 		var winner = active_players[0]
 		var win_text = winner.name.to_upper() + " WINS!"
-		
-		print("WORLD DEBUG: Winner determined: ", win_text)
 		emit_signal("match_ended", win_text)
 		
 	elif active_players.size() == 0:
 		game_over = true
-		print("WORLD DEBUG: Draw detected!")
 		emit_signal("match_ended", "DRAW!")
 
 # --- GAME LOOP ---
@@ -106,13 +136,13 @@ func _process(delta):
 
 	# Damage loop
 	for entity in active_players:
-		if is_instance_valid(entity) and entity.visible: # Only damage if visible/alive
+		if is_instance_valid(entity) and entity.visible:
 			var dist = entity.global_position.distance_to(current_center)
 			if dist > current_radius:
 				if entity.has_method("take_ring_damage"):
 					entity.take_ring_damage(5.0 * delta)
 
-# --- THE REST OF YOUR HELPERS (UNCHANGED) ---
+# --- HELPERS ---
 func start_phase(new_phase):
 	current_phase = new_phase
 	match current_phase:
