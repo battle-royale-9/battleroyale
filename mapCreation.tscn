@@ -18798,8 +18798,10 @@ position = Vector2(468, -428)
 position = Vector2(-559, -501)
 
 [node name="Player1" parent="." unique_id=262399486 instance=ExtResource("12_oql6p")]
+position = Vector2(-114, -14)
 
 [node name="Player2" parent="." unique_id=1906968533 instance=ExtResource("13_h7oxj")]
+position = Vector2(167, -84)
 
 [node name="buildings" type="TileMapLayer" parent="." unique_id=1670697557]
 z_index = 1
