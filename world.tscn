@@ -1,16 +1,9 @@
 [gd_scene format=3 uid="uid://jrana7xi5tt8"]
 
-[ext_resource type="Script" uid="uid://d34cp8q5hr61y" path="res://world.gd" id="1_ic0uy"]
-[ext_resource type="PackedScene" uid="uid://d2ja2ta87ep8m" path="res://mapCreation.tscn" id="2_wse8f"]
-[ext_resource type="PackedScene" uid="uid://cppwy1on67ohd" path="res://playerAnimated.tscn" id="3_aqk2v"]
-[ext_resource type="PackedScene" uid="uid://dxawtw6wk84pw" path="res://book_spells/book_fireball.tscn" id="3_tlwt5"]
-[ext_resource type="PackedScene" uid="uid://dddh7eu8jyb62" path="res://book_spells/book_lightning.tscn" id="4_aqk2v"]
-[ext_resource type="PackedScene" uid="uid://c5a1v8y773lb4" path="res://book_spells/book_beam.tscn" id="5_dwbse"]
-[ext_resource type="PackedScene" uid="uid://clt5hm0m3q51u" path="res://book_spells/book_plant.tscn" id="6_pkg7o"]
-[ext_resource type="PackedScene" uid="uid://dc6wmh0fbcp6q" path="res://dummy.tscn" id="7_pkg7o"]
-[ext_resource type="PackedScene" uid="uid://myvsswghxgp" path="res://spells/barrier.tscn" id="8_gbfbk"]
-[ext_resource type="PackedScene" uid="uid://bea1sbbs3fakm" path="res://monster/minion.tscn" id="9_ioo17"]
-[ext_resource type="Shader" uid="uid://c1vtocbs1v5ul" path="res://world.gdshader" id="10_wse8f"]
+[ext_resource type="Script" path="res://world.gd" id="1_ic0uy"]
+[ext_resource type="PackedScene" uid="uid://2ww4gym3oflq" path="res://mapCreation.tscn" id="2_wse8f"]
+[ext_resource type="PackedScene" path="res://spells/barrier.tscn" id="8_gbfbk"]
+[ext_resource type="Shader" path="res://world.gdshader" id="10_wse8f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ic0uy"]
 shader = ExtResource("10_wse8f")
@@ -23,63 +16,7 @@ script = ExtResource("1_ic0uy")
 
 [node name="Map" parent="." unique_id=1930266404 instance=ExtResource("2_wse8f")]
 
-[node name="Player" parent="." unique_id=262399486 instance=ExtResource("3_aqk2v")]
-
-[node name="BookFireball" parent="." unique_id=1198535969 instance=ExtResource("3_tlwt5")]
-position = Vector2(127, -39)
-
-[node name="BookFireball2" parent="." unique_id=2001461244 instance=ExtResource("3_tlwt5")]
-position = Vector2(151, -19)
-
-[node name="BookFireball3" parent="." unique_id=791692777 instance=ExtResource("3_tlwt5")]
-position = Vector2(138, 13)
-
-[node name="BookFireball4" parent="." unique_id=1295713646 instance=ExtResource("3_tlwt5")]
-position = Vector2(102, 34)
-
-[node name="BookLightning" parent="." unique_id=1123432822 instance=ExtResource("4_aqk2v")]
-position = Vector2(-47, -26)
-
-[node name="BookLightning2" parent="." unique_id=1247415232 instance=ExtResource("4_aqk2v")]
-position = Vector2(-68, -45)
-
-[node name="BookLightning3" parent="." unique_id=1075805179 instance=ExtResource("4_aqk2v")]
-position = Vector2(-97, -15)
-
-[node name="BookLightning4" parent="." unique_id=163293788 instance=ExtResource("4_aqk2v")]
-position = Vector2(-70, 16)
-
-[node name="BookBeam" parent="." unique_id=316556422 instance=ExtResource("5_dwbse")]
-position = Vector2(40, -212)
-
-[node name="BookBeam2" parent="." unique_id=853099642 instance=ExtResource("5_dwbse")]
-position = Vector2(79, -195)
-
-[node name="BookBeam3" parent="." unique_id=227463912 instance=ExtResource("5_dwbse")]
-position = Vector2(-14, -168)
-
-[node name="BookBeam4" parent="." unique_id=658919964 instance=ExtResource("5_dwbse")]
-position = Vector2(19, -188)
-
-[node name="BookPlant" parent="." unique_id=1370339200 instance=ExtResource("6_pkg7o")]
-position = Vector2(4, -55)
-
-[node name="BookPlant2" parent="." unique_id=1929866604 instance=ExtResource("6_pkg7o")]
-position = Vector2(32, -47)
-
-[node name="BookPlant3" parent="." unique_id=1277488383 instance=ExtResource("6_pkg7o")]
-position = Vector2(54, -32)
-
-[node name="BookPlant4" parent="." unique_id=1471592748 instance=ExtResource("6_pkg7o")]
-position = Vector2(55, -4)
-
-[node name="Dummy" parent="." unique_id=1681343172 instance=ExtResource("7_pkg7o")]
-position = Vector2(110, 109)
-
 [node name="Barrier" parent="." unique_id=1522064716 instance=ExtResource("8_gbfbk")]
-
-[node name="Minion" parent="." unique_id=386353379 instance=ExtResource("9_ioo17")]
-position = Vector2(-243, -137)
 
 [node name="RingVisual" type="ColorRect" parent="." unique_id=1959713921]
 material = SubResource("ShaderMaterial_ic0uy")
