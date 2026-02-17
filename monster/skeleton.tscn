@@ -174,7 +174,7 @@ radius = 11.714285
 height = 45.42857
 
 [node name="Skeleton" type="CharacterBody2D" unique_id=660642471]
-scale = Vector2(0.7, 0.7)
+scale = Vector2(0.85, 0.85)
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_76ku7")
@@ -183,7 +183,7 @@ script = ExtResource("1_76ku7")
 scale = Vector2(0.7, 0.7)
 sprite_frames = SubResource("SpriteFrames_gb8bw")
 animation = &"run"
-frame_progress = 0.41881213
+frame_progress = 0.29997656
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=497111932]
 position = Vector2(2.857143, 2.3841858e-07)

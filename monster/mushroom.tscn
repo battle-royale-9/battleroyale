@@ -202,12 +202,14 @@ radius = 13.0
 height = 42.0
 
 [node name="Mushroom" type="CharacterBody2D" unique_id=1634570033]
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_mvi10")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=32517412]
 sprite_frames = SubResource("SpriteFrames_yrchi")
 animation = &"run"
-frame_progress = 0.008229833
+frame_progress = 0.5285125
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1447434564]
 position = Vector2(1, 6)

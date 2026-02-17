@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://caecqhsdyk5d2"]
+
+[ext_resource type="Script" uid="uid://hj3547w7q76n" path="res://spawner/minion_spawner.gd" id="1_noxd2"]
+[ext_resource type="PackedScene" uid="uid://bea1sbbs3fakm" path="res://monster/minion.tscn" id="2_gqgo8"]
+
+[node name="Node2D" type="Node2D" unique_id=1129135656]
+script = ExtResource("1_noxd2")
+monster_scene = ExtResource("2_gqgo8")
+spawn_radius = 100.0
