@@ -1,9 +1,9 @@
-[gd_scene format=3 uid="uid://cppwy1on67ohd"]
+[gd_scene format=3 uid="uid://cj5x877s8rbkl"]
 
 [ext_resource type="Texture2D" uid="uid://do17cipxsl33r" path="res://images/playerAnim/Idle.png" id="1_jub5n"]
-[ext_resource type="Script" path="res://playerAnimated.gd" id="1_x7qct"]
+[ext_resource type="Script" uid="uid://dd4yrmyy7eq3y" path="res://playerAnimated.gd" id="1_x7qct"]
 [ext_resource type="Texture2D" uid="uid://wivjh6v3o11t" path="res://images/playerAnim/Attack1.png" id="2_deskq"]
-[ext_resource type="PackedScene" uid="uid://myvsswghxgp" path="res://spells/barrier.tscn" id="2_l7a1p"]
+[ext_resource type="PackedScene" path="res://spells/barrier.tscn" id="2_l7a1p"]
 [ext_resource type="Texture2D" uid="uid://decbd02atleyp" path="res://images/playerAnim/Run.png" id="2_x7qct"]
 [ext_resource type="Texture2D" uid="uid://bj4r07dr5iroh" path="res://images/playerAnim/Attack2.png" id="3_dnqdc"]
 [ext_resource type="Texture2D" uid="uid://bwkcte2el5kli" path="res://images/playerAnim/Hit.png" id="4_dnqdc"]
@@ -317,7 +317,7 @@ content_margin_bottom = 0.0
 bg_color = Color(0.75686276, 0.84705883, 0.19607843, 1)
 anti_aliasing = false
 
-[node name="CharacterBody2D" type="CharacterBody2D" unique_id=262399486]
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=262399486 groups=["players"]]
 z_index = 1
 collision_layer = 2
 collision_mask = 3

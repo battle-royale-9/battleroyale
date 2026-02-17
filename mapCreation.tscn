@@ -1,4 +1,4 @@
-[gd_scene format=4 uid="uid://2ww4gym3oflq"]
+[gd_scene format=4 uid="uid://clmrdcn4g2ax4"]
 
 [ext_resource type="Texture2D" uid="uid://bim44dy37hj5o" path="res://images/Tilesets/TilesetField.png" id="1_4y153"]
 [ext_resource type="Texture2D" uid="uid://bfi8ijlvj4sj5" path="res://images/Tilesets/TilesetWater.png" id="2_5mm0s"]
@@ -13,8 +13,9 @@
 [ext_resource type="PackedScene" uid="uid://caecqhsdyk5d2" path="res://spawner/minion_spawner.tscn" id="11_54reb"]
 [ext_resource type="PackedScene" uid="uid://c2poeq2feik01" path="res://spawner/mushroom_spawner.tscn" id="11_oql6p"]
 [ext_resource type="PackedScene" uid="uid://djcy6yffkiix6" path="res://spawner/flyingeye_spawner.tscn" id="12_h7oxj"]
-[ext_resource type="PackedScene" uid="uid://cppwy1on67ohd" path="res://playerAnimated.tscn" id="12_oql6p"]
-[ext_resource type="PackedScene" uid="uid://buqmnygvi1ri5" path="res://playerAnimatedController.tscn" id="13_h7oxj"]
+[ext_resource type="PackedScene" uid="uid://cj5x877s8rbkl" path="res://playerAnimated.tscn" id="12_oql6p"]
+[ext_resource type="PackedScene" path="res://playerAnimatedController.tscn" id="13_h7oxj"]
+[ext_resource type="PackedScene" uid="uid://beln5hmvmud4" path="res://bot.tscn" id="14_h7oxj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5isgq"]
 texture = ExtResource("1_4y153")
@@ -18797,10 +18798,13 @@ position = Vector2(468, -428)
 [node name="Node2D" parent="spawner/flyingeye" unique_id=199198064 instance=ExtResource("12_h7oxj")]
 position = Vector2(-559, -501)
 
-[node name="Player1" parent="." unique_id=262399486 groups=["players"] instance=ExtResource("12_oql6p")]
+[node name="Player1" parent="." unique_id=262399486 instance=ExtResource("12_oql6p")]
 
 [node name="Player2" parent="." unique_id=1906968533 instance=ExtResource("13_h7oxj")]
 position = Vector2(167, -84)
+
+[node name="CharacterBody2D" parent="." unique_id=673000139 instance=ExtResource("14_h7oxj")]
+position = Vector2(30, 160)
 
 [node name="buildings" type="TileMapLayer" parent="." unique_id=1670697557]
 z_index = 1
