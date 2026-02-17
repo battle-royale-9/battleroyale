@@ -13,8 +13,8 @@
 [ext_resource type="PackedScene" uid="uid://caecqhsdyk5d2" path="res://spawner/minion_spawner.tscn" id="11_54reb"]
 [ext_resource type="PackedScene" uid="uid://c2poeq2feik01" path="res://spawner/mushroom_spawner.tscn" id="11_oql6p"]
 [ext_resource type="PackedScene" uid="uid://djcy6yffkiix6" path="res://spawner/flyingeye_spawner.tscn" id="12_h7oxj"]
-[ext_resource type="PackedScene" path="res://playerAnimated.tscn" id="12_oql6p"]
-[ext_resource type="PackedScene" path="res://playerAnimatedController.tscn" id="13_h7oxj"]
+[ext_resource type="PackedScene" uid="uid://cppwy1on67ohd" path="res://playerAnimated.tscn" id="12_oql6p"]
+[ext_resource type="PackedScene" uid="uid://buqmnygvi1ri5" path="res://playerAnimatedController.tscn" id="13_h7oxj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5isgq"]
 texture = ExtResource("1_4y153")
@@ -18780,7 +18780,7 @@ tile_set = SubResource("TileSet_bfa0f")
 [node name="goblin" type="Node" parent="spawner" unique_id=293016704]
 
 [node name="Node2D" parent="spawner/goblin" unique_id=1129135656 instance=ExtResource("11_54reb")]
-position = Vector2(538, 501)
+position = Vector2(455, 466)
 
 [node name="skeleton" type="Node" parent="spawner" unique_id=575160021]
 
