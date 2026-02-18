@@ -149,7 +149,7 @@ func collect_book(book_name):
 	
 	if spell_key != "":
 		unlock_spell(spell_key)
-		if book_counts[spell_key] >= 3:
+		if book_counts[spell_key] == 3:
 			match spell_key:
 				"XY": unlock_spell("XYAB")
 				"YB": unlock_spell("YBXA")

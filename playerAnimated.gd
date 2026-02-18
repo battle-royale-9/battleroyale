@@ -165,7 +165,7 @@ func collect_book(book_name):
 	if spell_key != "":
 		book_counts[spell_key] += 1
 		show_status_text("Power Up! (+10%)")
-		if book_counts[spell_key] >= 5:
+		if book_counts[spell_key] == 5:
 			unlock_ultimate_logic(spell_key)
 			show_status_text("ULTIMATE UNLOCKED!")
 

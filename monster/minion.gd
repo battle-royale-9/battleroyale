@@ -133,14 +133,8 @@ func die():
 	queue_free()
 
 func drop_loot():
-	# 20% Drop Chance (1 in 5 monsters)
-	if randf() <= 0.2:
-		var books = [BOOK_FIREBALL, BOOK_LIGHTNING, BOOK_BEAM, BOOK_PLANT]
-		var chosen = books.pick_random()
-		
-		if chosen:
-			var loot = chosen.instantiate()
-			loot.global_position = global_position
-			
-			loot.z_index = 1 
-			get_parent().call_deferred("add_child", loot)
+	if randf() <= 0.75:
+		var loot = BOOK_PLANT.instantiate()
+		loot.global_position = global_position
+		loot.z_index = 1
+		get_parent().call_deferred("add_child", loot)
