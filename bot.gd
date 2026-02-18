@@ -25,8 +25,8 @@ var is_silenced = false
 var is_dying = false
 
 # --- HEALTH & SPELLS ---
-var max_hp = 50      
-var current_hp = 50   
+var max_hp = 200      
+var current_hp = 200   
 var current_cooldowns = {"23": 0.0, "WE": 0.0, "SD": 0.0}
 const MAX_COOLDOWNS = {"23": 5.0, "WE": 8.0, "SD": 12.0}
 
@@ -175,7 +175,8 @@ func process_cooldowns(delta):
 
 func take_damage(amount):
 	if is_dying: return
-	current_hp -= amount
+	current_hp = max(0, current_hp - amount)
+	
 	if hp_bar: hp_bar.value = current_hp
 	if current_hp <= 0: die()
 

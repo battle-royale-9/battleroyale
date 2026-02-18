@@ -11,8 +11,8 @@ var is_casting = false
 var is_dying = false
 
 # --- HEALTH SETTINGS ---
-var max_hp = 50      
-var current_hp = 50   
+var max_hp = 200      
+var current_hp = 200   
 
 # --- SPELL UNLOCKS ---
 var spells_unlocked = {
@@ -149,7 +149,7 @@ func collect_book(book_name):
 	
 	if spell_key != "":
 		unlock_spell(spell_key)
-		if book_counts[spell_key] == 3:
+		if book_counts[spell_key] == 5:
 			match spell_key:
 				"XY": unlock_spell("XYAB")
 				"YB": unlock_spell("YBXA")
@@ -210,7 +210,7 @@ func _physics_process(delta):
 
 # --- UI & LOGIC ---
 func update_hp_ui():
-	hp_bar.value = current_hp
+	hp_bar.value = max(0, current_hp)
 	var display_hp = int(round(current_hp))
 	hp_label.text = str(display_hp) + " / " + str(max_hp)
 
@@ -297,7 +297,7 @@ func get_damage_multiplier(spell_key):
 	if lookup_key.length() > 2: 
 		return 1.0 
 	
-	return 1.0 + (book_counts.get(lookup_key, 0) * 0.1)
+	return 1.0 + (book_counts.get(lookup_key, 0) * 0.04)
 
 # --- HEALTH & HELPERS ---
 func take_damage(amount):
